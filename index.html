@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>국민취업지원제도 유의사항</title><style>
+:root{
+  --bg:#f3f7ff; --card:#ffffff; --ink:#142033; --muted:#66758c; --line:#dfe8f5;
+  --blue:#1764d8; --blue2:#0f4fb2; --sky:#eaf4ff; --teal:#00a99d; --green:#0f8b6b;
+  --red:#dc2626; --redbg:#fff1f2; --amber:#b45309; --amberbg:#fff7ed; --purple:#6d28d9; --purplebg:#f5f0ff;
+  --shadow:0 8px 22px rgba(15, 45, 90, .08); --radius:20px;
+}
+*{box-sizing:border-box} html{scroll-behavior:smooth} body{margin:0;font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Noto Sans KR",sans-serif;background:#dceafe;color:var(--ink);line-height:1.62;word-break:keep-all;-webkit-text-size-adjust:100%}
+a{color:inherit}.phone{max-width:560px;margin:0 auto;min-height:100vh;background:linear-gradient(180deg,#eef6ff 0,#f7fbff 260px,#f7fbff 100%);padding:0 14px 92px}.hero{position:relative;margin:0 -14px;padding:26px 18px 22px;background:linear-gradient(140deg,#1167d8 0%,#20a7e6 72%);color:#fff;border-radius:0 0 28px 28px;overflow:hidden}.hero:before{content:"";position:absolute;right:-55px;top:-60px;width:170px;height:170px;border-radius:50%;background:rgba(255,255,255,.16)}.hero:after{content:"국취";position:absolute;right:18px;bottom:12px;font-weight:1000;font-size:54px;color:rgba(255,255,255,.11);letter-spacing:-.08em}.eyebrow{position:relative;z-index:1;display:inline-flex;align-items:center;gap:6px;background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);border-radius:999px;padding:6px 10px;font-size:12px;font-weight:900}.hero h1{position:relative;z-index:1;margin:13px 0 7px;font-size:28px;letter-spacing:-.06em;line-height:1.14}.hero p{position:relative;z-index:1;margin:0;font-size:14px;color:rgba(255,255,255,.94)}.type-tabs{display:flex;gap:8px;margin:14px 0 10px}.type-tab{flex:1;border:1px solid var(--line);background:#fff;border-radius:16px;padding:12px 10px;font-weight:1000;color:#24344c;box-shadow:0 4px 12px rgba(20,32,51,.05);cursor:pointer}.type-tab.active{background:#123f8f;color:#fff;border-color:#123f8f}.search-wrap{position:sticky;top:0;z-index:60;margin:0 -14px 12px;padding:10px 14px;background:rgba(247,251,255,.94);backdrop-filter:blur(10px);border-bottom:1px solid rgba(210,225,244,.82)}.search-box{display:flex;gap:8px;background:#fff;border:2px solid #cddff5;border-radius:17px;padding:8px 9px;box-shadow:var(--shadow)}.search-box input{flex:1;border:0;outline:0;font-size:16px;background:transparent;color:var(--ink);min-width:0}.search-box button{border:0;background:#eef5ff;color:#0f4fb2;border-radius:12px;padding:8px 10px;font-weight:1000;cursor:pointer}.chip-row{display:flex;gap:7px;overflow:auto;padding:9px 0 2px;scrollbar-width:none}.chip-row::-webkit-scrollbar{display:none}.chip{flex:0 0 auto;border:1px solid var(--line);background:#fff;border-radius:999px;padding:8px 10px;font-size:13px;font-weight:900;color:#334155;text-decoration:none;box-shadow:0 3px 10px rgba(20,32,51,.04);cursor:pointer}.chip.active,.chip:active{background:#e9f2ff;border-color:#a8cdfc;color:#0f4fb2}.result-line{display:none;font-size:13px;color:#42526a;margin:8px 2px 0}.result-line b{color:#0f4fb2}.quick{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin:12px 0 14px}.quick-card{background:#fff;border:1px solid var(--line);border-radius:18px;padding:13px 12px;box-shadow:var(--shadow);min-height:92px}.quick-card strong{display:block;font-size:16px;letter-spacing:-.04em;margin-bottom:4px}.quick-card span{display:block;color:var(--muted);font-size:13px}.quick-card.danger{border-color:#fecdd3;background:linear-gradient(180deg,#fff,#fff7f8)}.quick-card.good{border-color:#b9f4d1;background:linear-gradient(180deg,#fff,#f7fffb)}.quick-card.tip{border-color:#fed7aa;background:linear-gradient(180deg,#fff,#fffaf4)}.section-title{display:flex;align-items:center;gap:9px;margin:20px 0 10px}.section-title .mark{width:33px;height:33px;border-radius:12px;background:#1764d8;color:#fff;display:grid;place-items:center;font-weight:1000;box-shadow:0 7px 18px rgba(23,100,216,.2);flex:0 0 auto}.section-title h2{margin:0;font-size:20px;letter-spacing:-.05em}.section-title p{margin:1px 0 0;color:var(--muted);font-size:13px}.notice{background:#fff;border:1px solid var(--line);border-radius:20px;padding:15px;margin:12px 0;box-shadow:var(--shadow)}.notice strong{display:block;font-size:16px;margin-bottom:4px;letter-spacing:-.04em}.notice ul{margin:7px 0 0;padding-left:18px}.notice li{margin:4px 0}.warn{border-color:#fecdd3;background:#fff7f8}.warn strong,.warn .head{color:var(--red)}.tipbox{border-color:#fed7aa;background:#fffaf4}.tipbox strong,.tipbox .head{color:#b45309}.okbox{border-color:#bbf7d0;background:#f7fffb}.okbox strong,.okbox .head{color:#0f8b6b}.section-card{display:block;background:#fff;border:1px solid var(--line);border-radius:20px;margin:10px 0;box-shadow:var(--shadow);overflow:hidden}.section-card.hidden{display:none!important}.section-card.match{outline:2px solid #93c5fd}.card-head{display:flex;gap:10px;align-items:flex-start;padding:15px}.badge{flex:0 0 auto;display:inline-grid;place-items:center;min-width:34px;height:34px;border-radius:12px;background:#eaf4ff;color:#0f4fb2;font-weight:1000}.card-head h3{margin:1px 0 2px;font-size:17px;letter-spacing:-.04em}.card-head p{margin:0;color:var(--muted);font-size:13px}.acc{border-top:1px solid var(--line);padding:0 15px 15px}.acc details{border:1px solid #e8eef7;border-radius:15px;margin-top:9px;background:#fbfdff;overflow:hidden}.acc summary{cursor:pointer;list-style:none;padding:12px 13px;font-weight:1000;display:flex;justify-content:space-between;gap:12px}.acc summary::-webkit-details-marker{display:none}.acc summary:after{content:"＋";color:#1764d8;font-weight:1000}.acc details[open] summary:after{content:"－"}.detail{padding:0 13px 13px;font-size:14px;color:#24344c}.detail ul,.detail ol{margin:6px 0 0;padding-left:18px}.detail li{margin:4px 0}.mini-table{width:100%;border-collapse:collapse;margin-top:8px;border:1px solid #e5edf7;border-radius:13px;overflow:hidden;display:table}.mini-table th,.mini-table td{padding:9px 8px;border-bottom:1px solid #e5edf7;text-align:left;font-size:13px;vertical-align:top}.mini-table th{background:#eff6ff;color:#24344c;font-weight:1000}.mini-table tr:last-child td{border-bottom:0}.copybox{margin-top:10px;background:#f8fbff;border:1px dashed #accbf4;border-radius:16px;padding:12px}.copybox textarea{width:100%;min-height:80px;border:0;background:transparent;resize:vertical;outline:0;font-family:inherit;font-size:14px;color:#213046}.btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:0;border-radius:12px;padding:10px 12px;background:#1764d8;color:#fff;font-weight:1000;text-decoration:none;cursor:pointer}.btn.light{background:#eef5ff;color:#0f4fb2}.btn.gray{background:#fff;color:#334155;border:1px solid var(--line)}.btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}.checklist{display:grid;gap:8px}.check{display:flex;gap:10px;background:#fff;border:1px solid var(--line);border-radius:15px;padding:12px;align-items:flex-start}.check input{width:22px;height:22px;accent-color:#1764d8;margin-top:1px;flex:0 0 auto}.check label{font-size:14px;font-weight:850}.bottom-nav{position:fixed;left:50%;bottom:0;transform:translateX(-50%);width:min(560px,100%);z-index:80;background:rgba(255,255,255,.96);backdrop-filter:blur(10px);border-top:1px solid var(--line);display:grid;grid-template-columns:repeat(5,1fr);padding:7px 8px env(safe-area-inset-bottom);box-shadow:0 -8px 24px rgba(15,45,90,.08)}.bottom-nav a{display:flex;flex-direction:column;align-items:center;gap:2px;text-decoration:none;color:#40516a;font-size:11px;font-weight:900}.bottom-nav b{font-size:18px;line-height:1}.footer{padding:24px 6px;text-align:center;color:#728198;font-size:12px}.hide-type{display:none!important}.nohit{display:none;text-align:center;padding:22px 10px;color:#66758c}.nohit strong{display:block;color:#142033;margin-bottom:4px}.source-note{font-size:12px;color:#728198;text-align:center;margin-top:14px}.hl{background:#fff3b0;border-radius:4px;padding:0 2px}.linkcard{display:block;text-decoration:none}.small{font-size:12px;color:var(--muted)}@media (min-width:561px){.phone{box-shadow:0 0 0 1px rgba(10,30,60,.05),0 20px 60px rgba(10,30,60,.15)}}
+@media print{body{background:#fff}.phone{max-width:none;padding:0;background:#fff}.search-wrap,.bottom-nav,.btn-row,.type-tabs{display:none!important}.hero{border-radius:0}.section-card,.notice,.quick-card{box-shadow:none;break-inside:avoid}.acc details{break-inside:avoid}.hide-type{display:block!important}}
+</style></head>
+<body data-default-type="all"><main class="phone" id="top">
+<header class="hero"><span class="eyebrow">국민취업지원제도 참여자 안내</span><h1>국민취업지원제도 유의사항</h1><p>1유형·2유형 통합 검색형<br>휴대폰에서 검색·목차·체크가 잘 보이도록 만든 안내문입니다.</p></header>
+<div class="type-tabs" aria-label="유형 선택"><button class="type-tab active" data-type="all" onclick="setType('all')">전체</button><button class="type-tab" data-type="type1" onclick="setType('type1')">1유형</button><button class="type-tab" data-type="type2" onclick="setType('type2')">2유형</button></div>
+<div class="search-wrap" id="search"><div class="search-box"><input id="searchInput" type="search" placeholder="궁금한 단어 검색: 수당, 알바, 취업, 유예" autocomplete="off"><button onclick="clearSearch()">초기화</button></div><div class="chip-row" id="toc"><button class="chip" onclick="quickSearch('수당')">수당</button><button class="chip" onclick="quickSearch('소득')">소득</button><button class="chip" onclick="quickSearch('알바')">알바</button><button class="chip" onclick="quickSearch('취업')">취업</button><button class="chip" onclick="quickSearch('훈련')">훈련</button><button class="chip" onclick="quickSearch('유예')">유예</button><button class="chip" onclick="quickSearch('증빙')">증빙</button><button class="chip" onclick="quickSearch('고용24')">고용24</button></div><div class="result-line" id="resultLine"></div></div>
+
+<div class="quick" id="quick">
+  <div class="quick-card danger"><strong>소득·취업은 바로 신고</strong><span>알바, 일용근로, 창업, 프리랜서 포함</span></div>
+  <div class="quick-card tip"><strong>수당 신청일 확인</strong><span>지정일·이행기간·증빙자료 확인</span></div>
+  <div class="quick-card good"><strong>훈련은 먼저 상담</strong><span>내일배움카드·일경험도 신청 전 확인</span></div>
+  <div class="quick-card"><strong>검색해서 찾기</strong><span>“알바”, “유예”, “입사지원” 입력</span></div>
+</div>
+
+<div class="notice tipbox"><strong>내담자용 핵심 안내</strong> 애매하면 혼자 판단하지 말고 상담사에게 먼저 연락하면 됩니다. 특히 <b>소득, 취업, 창업, 훈련, 상담일정 변경, 타사업 참여</b>는 먼저 알려주세요.</div>
+
+<div class="section-title" id="guide-list"><div class="mark">공통</div><div><h2>공통 유의사항</h2><p>1유형·2유형 모두 해당되는 내용입니다.</p></div></div>
+
+<section class="section-card" data-type="common" data-tags="기본의무 상담 일정 과제 연락 변경">
+  <div class="card-head"><div class="badge">01</div><div><h3>상담일정·과제·연락</h3><p>정해진 상담과 과제는 제도 참여의 기본입니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>꼭 지켜야 할 것</summary><div class="detail"><ul><li>상담사와 수립한 취업활동계획을 성실히 이행합니다.</li><li>상담사가 제시한 취업 관련 과제는 기한 안에 수행합니다.</li><li>예약제로 운영되므로 상담시간을 지켜주세요.</li><li>상담시간 변경이 필요하면 가능하면 3일 전 미리 알려주세요.</li><li>주소, 연락처, 학교·훈련·타사업 참여 등 변동사항은 바로 공유합니다.</li></ul></div></details>
+    <details><summary>연락이 안 되면 생길 수 있는 문제</summary><div class="detail"><ul><li>상담·수당·취업지원 일정 안내를 놓칠 수 있습니다.</li><li>정당한 사유 없이 계획을 이행하지 않으면 수당 감액·부지급 또는 중단으로 이어질 수 있습니다.</li><li>중요한 변동사항을 신고하지 않으면 부정수급 문제가 될 수 있습니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="common" data-tags="고용24 온라인 신청 즐겨찾기 직업심리검사 구직신청">
+  <div class="card-head"><div class="badge">02</div><div><h3>고용24에서 자주 쓰는 메뉴</h3><p>휴대폰에서 자주 쓰는 메뉴는 즐겨찾기에 등록해두면 편합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>자주 쓰는 메뉴</summary><div class="detail"><table class="mini-table"><tr><th>상황</th><th>고용24 메뉴</th></tr><tr><td>수당 신청</td><td>국민취업지원제도 / 구직촉진수당 신청 / Ⅱ유형 취업활동비용 신청</td></tr><tr><td>검사</td><td>취업준비 → 직업심리검사</td></tr><tr><td>구직신청·구직관리</td><td>일자리 찾기 → 구직신청 / 구직관리</td></tr><tr><td>훈련</td><td>훈련역량(강화) → 국민내일배움카드 / 훈련찾기·신청 / 훈련관리</td></tr><tr><td>일경험</td><td>미래내일 일경험</td></tr></table></div></details>
+    <details><summary>즐겨찾기 추천</summary><div class="detail"><ul><li>로그인 후 ‘구직촉진수당 신청’ 또는 자주 쓰는 메뉴를 즐겨찾기에 추가해두세요.</li><li>다음 로그인 때 메인화면에서 바로 확인하기 쉬워집니다.</li><li>휴대폰 화면에서는 메뉴명이 작게 보일 수 있으니 검색창에 “구직촉진수당”, “국민취업지원제도”, “직업심리검사”처럼 직접 검색해도 됩니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="common" data-tags="소득 알바 일용근로 취업 창업 프리랜서 신고 생계급여 직접일자리">
+  <div class="card-head"><div class="badge">03</div><div><h3>소득·취업·창업은 먼저 알려주세요</h3><p>알바 하루, 일용근로, 프리랜서, 사업소득도 확인이 필요합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>반드시 알려야 하는 상황</summary><div class="detail"><ul><li>취업 또는 창업한 경우</li><li>아르바이트, 일용근로, 단기근로, 프리랜서·노무제공을 한 경우</li><li>사업자등록, 매출, 사업소득이 발생한 경우</li><li>훈련수당, 일경험 수당, 정부지원금, 이자·배당 등 소득이 있는 경우</li><li>생계급여 신청·선정·중지, 실업급여 신청, 직접일자리·공공근로 참여가 있는 경우</li></ul></div></details>
+    <details><summary>보낼 내용</summary><div class="detail"><ul><li>근무/소득 발생일</li><li>회사명 또는 소득 발생처</li><li>근무시간, 주 근로시간, 금액, 입금일</li><li>고용보험 취득 여부, 근로계약서 보유 여부</li></ul><div class="copybox"><textarea id="msg_common_income" readonly>상담사님, 소득/근로/취업 관련 변동이 있어 연락드립니다. 시작일: ○월 ○일, 내용: ○○, 금액/근로시간: ○○입니다. 필요한 서류 알려주세요.</textarea><button class="btn light" data-copy="msg_common_income" onclick="copyText('msg_common_income')">문구 복사</button></div></div></details>
+    <details><summary>숨기면 안 되는 이유</summary><div class="detail"><ul><li>수당 감액·정지·부지급 여부가 달라질 수 있습니다.</li><li>취업지원 종료, 유예, 지속참여, 취업성공수당 판단이 달라질 수 있습니다.</li><li>신고하지 않고 수당을 받으면 부정수급으로 환수 및 제재가 생길 수 있습니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="common" data-tags="훈련 내일배움카드 직업훈련 일경험 신청 상담">
+  <div class="card-head"><div class="badge">04</div><div><h3>직업훈련·일경험 신청 전 확인</h3><p>본인이 먼저 신청하기 전에 상담사에게 훈련명과 기간을 보내주세요.</p></div></div>
+  <div class="acc">
+    <details open><summary>훈련 전 확인할 것</summary><div class="detail"><ul><li>훈련명, 기관명, 시작일·종료일, 시간표를 확인합니다.</li><li>현재 취업활동계획과 맞는지 상담사가 먼저 확인해야 합니다.</li><li>집중취업알선기간, 참여횟수, 참여기간 제한에 따라 신청이 어려울 수 있습니다.</li><li>훈련 중에도 입사지원·상담 등 취업지원이 필요할 수 있습니다.</li></ul><div class="copybox"><textarea id="msg_common_train" readonly>상담사님, 직업훈련을 알아보고 있습니다. 훈련명: ○○, 기관: ○○, 기간: ○월 ○일~○월 ○일, 시간표: ○○입니다. 국취 진행상 신청 가능한지 확인 부탁드립니다.</textarea><button class="btn light" data-copy="msg_common_train" onclick="copyText('msg_common_train')">문구 복사</button></div></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="common" data-tags="유예 중단 종료 재참여 재신청 질병 출산 간병 병역 해외체류">
+  <div class="card-head"><div class="badge">05</div><div><h3>유예·중단·종료가 필요한 경우</h3><p>참여가 어려운 사정이 생기면 중단하기 전에 먼저 유예 가능 여부를 확인합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>유예 검토가 필요한 상황</summary><div class="detail"><ul><li>임신·출산, 본인 질병·부상</li><li>배우자 또는 직계존비속 질병·부상으로 간병이 필요한 경우</li><li>병역의무, 6개월 미만 해외체류, 천재지변 등</li><li>그 밖에 상담·구직활동 이행이 어려운 사정</li></ul></div></details>
+    <details><summary>주의</summary><div class="detail"><ul><li>유예 사유가 끝난 뒤 정해진 기간 안에 재참여하지 않으면 종료될 수 있습니다.</li><li>취업, 창업, 직접일자리 참여, 생계급여 선정 등은 종료 또는 유형변경 사유가 될 수 있습니다.</li><li>임의로 연락을 끊거나 상담을 불참하면 중단·제한으로 이어질 수 있습니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="common" data-tags="계좌 통장 압류방지 행복지킴이 새마을금고 취업이룸통장">
+  <div class="card-head"><div class="badge">06</div><div><h3>계좌·통장 확인</h3><p>수당은 본인 명의 계좌로 지급됩니다.</p></div></div>
+  <div class="acc">
+    <details><summary>일반 계좌</summary><div class="detail"><ul><li>수당은 원칙적으로 수급자 본인 명의 계좌로 입금됩니다.</li><li>휴면계좌, 사업자계좌, 적금계좌 등은 지급이 어려울 수 있습니다.</li><li>계좌번호 오기재 시 지급이 지연될 수 있습니다.</li></ul></div></details>
+    <details><summary>압류방지통장</summary><div class="detail"><ul><li>신용 문제 등으로 압류방지 계좌가 필요한 경우 행복지킴이통장 사용 여부를 확인하세요.</li><li>통장 첫 페이지에 “압류방지 전용통장” 문구가 있는지 확인합니다.</li><li>새마을금고 압류방지통장은 입금이 불가할 수 있으니 상담사와 확인하세요.</li></ul></div></details>
+  </div>
+</section>
+
+<div class="section-title"><div class="mark">Ⅰ</div><div><h2>1유형 전용 안내</h2><p>구직촉진수당을 받는 참여자에게 특히 중요한 내용입니다.</p></div></div>
+
+<section class="section-card" data-type="type1" data-tags="구직촉진수당 수당 신청 지정일 고용24 온라인">
+  <div class="card-head"><div class="badge">Ⅰ-1</div><div><h3>구직촉진수당 신청 흐름</h3><p>지정일과 이행기간을 확인하고 신청합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>기본 흐름</summary><div class="detail"><ol><li>수급자격 인정</li><li>상담·검사 후 취업활동계획(IAP) 수립</li><li>1회차 구직촉진수당 신청</li><li>2~6회차는 지급주기마다 계획된 구직활동 이행</li><li>지정일에 고용24 또는 상담사 안내 방식으로 신청</li><li>이행결과와 소득신고 확인 후 지급</li></ol></div></details>
+    <details><summary>고용24 신청 시 확인</summary><div class="detail"><ul><li>신청 회차를 정확히 선택합니다.</li><li>이행기간과 제출일(지정일)을 확인합니다.</li><li>“취업활동계획 내용 보기”로 회차별 계획을 확인합니다.</li><li>입사지원, 직업훈련, 집단상담, 자격증 응시 등 실제 이행내용에 맞게 입력합니다.</li><li>해당 회차에 발생한 소득은 반드시 입력합니다.</li></ul></div></details>
+    <details><summary>가장 많이 하는 실수</summary><div class="detail"><ul><li>지정일을 놓침</li><li>활동은 했지만 증빙자료가 없음</li><li>입사지원 결과를 안 적음</li><li>알바·훈련수당·일경험 수당을 소득신고에 누락함</li><li>계획과 다른 직무로 지원하고 인정될 거라고 생각함</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="type1" data-tags="수당액 월60 가족수당 부양가족 분할지급">
+  <div class="card-head"><div class="badge">Ⅰ-2</div><div><h3>수당 금액과 가족수당</h3><p>기본 월 60만원, 부양가족이 있으면 추가될 수 있습니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>금액</summary><div class="detail"><table class="mini-table"><tr><th>구분</th><th>내용</th></tr><tr><td>기본수당</td><td>월 60만원 × 6개월</td></tr><tr><td>가족수당</td><td>부양가족 1인당 월 10만원, 월 최대 40만원</td></tr><tr><td>부양가족 예시</td><td>만 18세 이하, 만 70세 이상, 중증장애인 등</td></tr><tr><td>분할지급</td><td>상황에 따라 12개월 이내 분할지급 선택 가능</td></tr></table></div></details>
+    <details><summary>주의</summary><div class="detail"><ul><li>가족수당 대상 변동이 있으면 바로 알려야 합니다.</li><li>소득이 있으면 신고소득에 따라 지급액이 줄거나 지급 정지될 수 있습니다.</li><li>개인별 기준금액과 수당액은 상담사가 확인합니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="type1" data-tags="구직활동 이행 증빙 입사지원 면접 직업훈련 자격증 50 감액 부지급">
+  <div class="card-head"><div class="badge">Ⅰ-3</div><div><h3>구직활동 이행과 증빙</h3><p>계획에 맞게 활동하고, 객관적 증빙을 제출해야 합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>인정 기준 핵심</summary><div class="detail"><ul><li>회차별 계획에 정해진 활동을 이행해야 합니다.</li><li>상담 1회, 프로그램 수료 1회는 각각 구직활동으로 인정될 수 있습니다.</li><li>2일 이상 집단상담프로그램은 구직활동 2개로 인정될 수 있습니다.</li><li>직업훈련은 지급단위기간 내 참여일수와 출석률에 따라 인정 개수가 달라질 수 있습니다.</li></ul></div></details>
+    <details><summary>증빙에 꼭 보여야 할 것</summary><div class="detail"><ul><li>본인 이름</li><li>활동일 또는 활동기간</li><li>기업명·직무명·지원일·지원방법</li><li>면접·시험·프로그램 참여 사실</li><li>훈련 출석부, 수료증, 응시확인서, 입사지원내역 등</li></ul></div></details>
+    <details><summary>이행을 못 하면</summary><div class="detail"><ul><li>계획의 일부만 이행한 경우 감액될 수 있습니다.</li><li>50% 미만 이행 시 해당 회차 수당이 부지급될 수 있습니다.</li><li>지급중단 횟수가 3회가 되면 나머지 구직촉진수당 수급권이 소멸될 수 있습니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="type1" data-tags="소득신고 감액 지급정지 알바 일용 사업 이자 배당 훈련수당 일경험">
+  <div class="card-head"><div class="badge">Ⅰ-4</div><div><h3>소득신고와 수당 감액·정지</h3><p>소득은 ‘금액이 작아도’ 먼저 신고하는 것이 안전합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>신고 대상 예시</summary><div class="detail"><ul><li>근로소득: 알바, 일용근로, 단기근로, 급여</li><li>사업소득: 매출, 프리랜서, 노무제공, 사업자 소득</li><li>이전소득: 각종 수당, 정부지원금, 훈련수당, 일경험 수당 등</li><li>재산소득: 이자, 배당, 임대료 등</li></ul></div></details>
+    <details><summary>수당에 미치는 영향</summary><div class="detail"><ul><li>신고소득에 따라 구직촉진수당이 감액되거나 지급 정지될 수 있습니다.</li><li>기준금액에서 신고소득을 뺀 금액으로 지급액을 산정하는 방식이 적용될 수 있습니다.</li><li>소득 기준을 초과했는데 신고하지 않고 수당을 받으면 환수 및 제재가 생길 수 있습니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="type1" data-tags="계획변경 직무변경 훈련변경 지정일 전 회차 대면상담">
+  <div class="card-head"><div class="badge">Ⅰ-5</div><div><h3>취업활동계획 변경</h3><p>계획 변경은 ‘하고 나서’가 아니라 ‘하기 전에’ 상담해야 안전합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>변경이 필요한 경우</summary><div class="detail"><ul><li>지원 직무, 근무지역, 희망조건이 바뀐 경우</li><li>훈련이나 프로그램 일정이 바뀐 경우</li><li>회차별 구직활동 내용을 바꾸고 싶은 경우</li><li>개인 사정으로 지정일 제출이 어려운 경우</li></ul></div></details>
+    <details><summary>주의</summary><div class="detail"><ul><li>해당 지급주기가 시작되기 전에 협의해야 합니다.</li><li>이미 지나간 회차의 계획을 뒤늦게 바꾸는 것은 어려울 수 있습니다.</li><li>계획과 다른 직무·조건으로 입사지원하면 불인정될 수 있습니다.</li></ul><div class="copybox"><textarea id="msg_type1_change" readonly>상담사님, 이번 회차 취업활동계획 변경이 필요합니다. 기존 계획: ○○ / 변경 희망: ○○ / 사유: ○○입니다. 변경 가능 여부 확인 부탁드립니다.</textarea><button class="btn light" data-copy="msg_type1_change" onclick="copyText('msg_type1_change')">문구 복사</button></div></div></details>
+  </div>
+</section>
+
+<div class="section-title"><div class="mark">Ⅱ</div><div><h2>2유형 전용 안내</h2><p>참여수당·참여장려수당 중심으로 확인하세요.</p></div></div>
+
+<section class="section-card" data-type="type2" data-tags="참여수당 IAP 수립 15만원 20만원 25만원 집단상담 취업특강">
+  <div class="card-head"><div class="badge">Ⅱ-1</div><div><h3>IAP 수립과 참여수당</h3><p>취업활동계획 수립을 완료해야 신청 가능합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>참여수당 구조</summary><div class="detail"><table class="mini-table"><tr><th>구분</th><th>내용</th></tr><tr><td>기본</td><td>IAP 수립 완료 시 15만원</td></tr><tr><td>추가</td><td>대면 취업특강·단기집단상담 2회, 심리안정프로그램 2회, 기업탐방, 집단상담 등</td></tr><tr><td>합계</td><td>대상·프로그램에 따라 최대 20~25만원 수준</td></tr><tr><td>지급</td><td>신청서 접수 후 통상 14일 이내</td></tr></table></div></details>
+    <details><summary>주의</summary><div class="detail"><ul><li>IAP 수립 전 취업 또는 중단이 되면 참여수당이 부지급될 수 있습니다.</li><li>상담·검사·과제를 이행해야 IAP 수립이 완료됩니다.</li><li>추가수당은 대상 유형과 프로그램 종류에 따라 달라집니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="type2" data-tags="참여장려수당 방문상담 30분 2만원 5회 10만원 대면상담">
+  <div class="card-head"><div class="badge">Ⅱ-2</div><div><h3>참여장려수당</h3><p>방문상담 30분 이상 참여 시 월 1회 인정될 수 있습니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>핵심 기준</summary><div class="detail"><table class="mini-table"><tr><th>항목</th><th>내용</th></tr><tr><td>금액</td><td>월 1회, 1회 2만원</td></tr><tr><td>한도</td><td>최대 5회, 총 10만원</td></tr><tr><td>상담</td><td>고용센터 또는 위탁기관 방문, 최소 30분 이상 집중 취업상담</td></tr><tr><td>신청</td><td>집중 구직활동기간 3개월 종료 시 등 일괄 신청</td></tr></table></div></details>
+    <details><summary>인정이 어려울 수 있는 경우</summary><div class="detail"><ul><li>전화·카톡만 한 경우</li><li>방문했지만 상담 시간이 짧은 경우</li><li>취업상담이 아닌 단순 서류 제출만 한 경우</li><li>월 1회를 초과한 방문상담</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="type2" data-tags="취업활동계획 월2회 구직활동 필수방문상담 집중구직활동기간">
+  <div class="card-head"><div class="badge">Ⅱ-3</div><div><h3>취업지원 참여단계</h3><p>2유형도 취업활동계획을 기준으로 진행됩니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>진행 중 해야 할 것</summary><div class="detail"><ul><li>계획에 따른 구직활동을 월 2회 기준으로 이행합니다.</li><li>IAP 수립 후 3~5개월 내 필수 방문상담 1회를 진행합니다.</li><li>집중구직활동기간 3개월 동안 구인정보 제공에 대한 적극적인 입사지원이 필요합니다.</li><li>직업훈련, 일경험, 알선, 컨설팅, 복지연계 등은 상담사와 계획에 맞게 진행합니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="type2" data-tags="훈련참여지원수당 폐지 2026 직업훈련 훈련수당">
+  <div class="card-head"><div class="badge">Ⅱ-4</div><div><h3>2026년 훈련참여지원수당 유의</h3><p>2026년부터 기존 훈련참여지원수당은 폐지되었습니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>확인할 내용</summary><div class="detail"><ul><li>2026년 신청자는 기존 훈련참여지원수당 대상이 아닐 수 있습니다.</li><li>다만 기존 참여자, 다른 특화 프로그램, 훈련기관 수당 등은 별도 확인이 필요합니다.</li><li>훈련은 수당과 별개로 취업활동계획에 맞는지 먼저 확인해야 합니다.</li></ul></div></details>
+  </div>
+</section>
+
+<section class="section-card" data-type="common" data-tags="취업성공수당 6개월 12개월 근속 주30시간 고용보험 창업 프리랜서 이직 퇴사">
+  <div class="card-head"><div class="badge">07</div><div><h3>취업성공수당</h3><p>취업 후 바로 받는 수당이 아니라 근속요건 확인 후 신청합니다.</p></div></div>
+  <div class="acc">
+    <details open><summary>기본 금액</summary><div class="detail"><table class="mini-table"><tr><th>근속</th><th>금액</th></tr><tr><td>6개월 근속</td><td>50만원</td></tr><tr><td>12개월 근속</td><td>100만원</td></tr><tr><td>총액</td><td>최대 150만원</td></tr></table></div></details>
+    <details><summary>대표 조건</summary><div class="detail"><ul><li>취업지원 신청 당시 소득요건 또는 특정계층 등 지급대상에 해당해야 합니다.</li><li>임금근로자는 보통 주 30시간 이상 근로와 고용보험 취득 여부를 확인합니다.</li><li>창업은 사업자등록, 전용공간, 매출 발생 등을 확인합니다.</li><li>노무제공자·프리랜서는 소득요건 등 별도 확인이 필요합니다.</li></ul></div></details>
+    <details><summary>퇴사·이직 시 바로 연락</summary><div class="detail"><ul><li>취업 후 1개월 이내 퇴사하면 지속참여 가능 여부를 빨리 확인해야 합니다.</li><li>이직·퇴사·재취업 시 취업성공수당 인정 여부가 달라질 수 있습니다.</li><li>근로계약서, 고용보험 취득자료, 급여명세서 등을 보관하세요.</li></ul><div class="copybox"><textarea id="msg_success" readonly>상담사님, 취업성공수당 대상 여부 확인 부탁드립니다. 입사일: ○월 ○일, 회사명: ○○, 주 근로시간: ○시간, 고용보험: 취득/예정/미확인입니다.</textarea><button class="btn light" data-copy="msg_success" onclick="copyText('msg_success')">문구 복사</button></div></div></details>
+  </div>
+</section>
+
+<div class="section-title" id="check"><div class="mark">체크</div><div><h2>보내기 전 확인 체크리스트</h2><p>체크한 내용은 같은 휴대폰 브라우저에 저장됩니다.</p></div></div>
+<div class="notice checklist">
+  <div class="check"><input data-save type="checkbox"><label>내 유형이 1유형인지 2유형인지 확인했다.</label></div>
+  <div class="check"><input data-save type="checkbox"><label>다음 상담일, 방문 장소, 제출 과제를 확인했다.</label></div>
+  <div class="check"><input data-save type="checkbox"><label>수당 신청일 또는 지정일을 확인했다.</label></div>
+  <div class="check"><input data-save type="checkbox"><label>알바·일용근로·소득·취업·창업 예정이 있으면 상담사에게 알렸다.</label></div>
+  <div class="check"><input data-save type="checkbox"><label>훈련 또는 타사업 참여는 신청 전에 상담사에게 확인하기로 했다.</label></div>
+  <div class="check"><input data-save type="checkbox"><label>입사지원, 면접, 훈련, 자격증 등 증빙자료를 보관했다.</label></div>
+  <div class="check"><input data-save type="checkbox"><label>취업 후 근로계약서, 고용보험, 주 근로시간을 확인하기로 했다.</label></div>
+  <div class="btn-row"><button class="btn gray" onclick="clearChecks()">체크 초기화</button><button class="btn light" onclick="printPage()">PDF 저장/인쇄</button></div>
+</div>
+
+<div class="section-title" id="message"><div class="mark">문구</div><div><h2>상담사에게 보내는 문구</h2><p>내담자가 복사해서 카톡으로 보내기 좋게 넣었습니다.</p></div></div>
+<div class="notice">
+  <strong>소득·취업 변동</strong>
+  <div class="copybox"><textarea id="msg_all_1" readonly>상담사님, 소득/취업 관련 변동이 있어 연락드립니다. 내용: ○○, 시작일: ○월 ○일, 금액/근로시간: ○○입니다. 필요한 서류 알려주세요.</textarea><button class="btn light" data-copy="msg_all_1" onclick="copyText('msg_all_1')">문구 복사</button></div>
+</div>
+<div class="notice">
+  <strong>상담일정 변경 요청</strong>
+  <div class="copybox"><textarea id="msg_all_2" readonly>상담사님, 개인 사정으로 예정된 상담일정 변경이 필요합니다. 가능한 시간은 ○월 ○일 ○시 이후입니다. 변경 가능 여부 확인 부탁드립니다.</textarea><button class="btn light" data-copy="msg_all_2" onclick="copyText('msg_all_2')">문구 복사</button></div>
+</div>
+<div class="notice">
+  <strong>수당 신청 확인</strong>
+  <div class="copybox"><textarea id="msg_all_3" readonly>상담사님, 이번 회차 수당 신청 전에 확인 부탁드립니다. 활동내용: ○○ / 증빙자료: 있음 / 소득 발생: 없음 또는 있음(○○원)입니다.</textarea><button class="btn light" data-copy="msg_all_3" onclick="copyText('msg_all_3')">문구 복사</button></div>
+</div>
+
+<div id="nohit" class="nohit"><strong>검색 결과가 없습니다.</strong>다른 단어로 검색해보세요. 예: 알바, 소득, 취업, 수당, 유예</div>
+<div class="source-note">자료 기준: 2026 국민취업지원제도 참여자 수첩, 2026 업무매뉴얼, 초기상담 안내자료</div>
+<div class="footer"><b>좋은일자리 · 국민취업지원제도</b><br>참여자 이해를 돕기 위한 안내자료이며, 개인별 판단은 담당 상담사와 확인합니다.</div>
+</main>
+<nav class="bottom-nav"><a href="#top"><b>⌂</b>처음</a><a href="#search"><b>🔎</b>검색</a><a href="#toc"><b>☰</b>목차</a><a href="#check"><b>☑</b>체크</a><a href="#message"><b>💬</b>문구</a></nav>
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+let currentType = document.body.dataset.defaultType || 'all';
+function setType(t){
+  currentType = t;
+  $$('.type-tab').forEach(b=>b.classList.toggle('active', b.dataset.type===t));
+  applyFilter();
+}
+function normalize(s){return (s||'').toLowerCase().replace(/\s+/g,'').trim();}
+function clearSearch(){ const i=$('#searchInput'); if(i){i.value='';} $$('.chip').forEach(c=>c.classList.remove('active')); applyFilter(); }
+function quickSearch(q){ const i=$('#searchInput'); if(i){i.value=q;} $$('.chip').forEach(c=>c.classList.toggle('active', c.textContent.trim()===q)); applyFilter(); location.hash='guide-list'; }
+function inType(card){
+  const t = card.dataset.type || 'common';
+  if(currentType==='all') return true;
+  return t==='common' || t===currentType;
+}
+function applyFilter(){
+  const q = normalize($('#searchInput')?.value || '');
+  let count=0, visibleTypeCount=0;
+  $$('.section-card').forEach(card=>{
+    card.classList.remove('match');
+    const typeOk = inType(card);
+    if(!typeOk){ card.classList.add('hide-type'); card.classList.remove('hidden'); return; }
+    card.classList.remove('hide-type');
+    visibleTypeCount++;
+    const text = normalize(card.innerText);
+    const hit = !q || text.includes(q);
+    card.classList.toggle('hidden', !hit);
+    if(hit){ count++; if(q) card.classList.add('match'); }
+  });
+  const line=$('#resultLine'), no=$('#nohit');
+  if(line){
+    if(q){ line.style.display='block'; line.innerHTML=`검색어 <b>${escapeHtml($('#searchInput').value)}</b> 관련 항목 ${count}개`; }
+    else { line.style.display='none'; }
+  }
+  if(no){ no.style.display=(count===0 && visibleTypeCount>0)?'block':'none'; }
+}
+function escapeHtml(str){return String(str).replace(/[&<>"']/g, m=>({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;"}[m]));}
+function copyText(id){
+  const el=document.getElementById(id); if(!el) return;
+  el.focus(); el.select(); el.setSelectionRange(0,99999);
+  try{navigator.clipboard.writeText(el.value);}catch(e){document.execCommand('copy');}
+  const btn=document.querySelector(`[data-copy="${id}"]`);
+  if(btn){const old=btn.textContent; btn.textContent='복사 완료'; setTimeout(()=>btn.textContent=old,1200);}
+}
+function printPage(){window.print();}
+function saveChecks(){
+  $$('input[type="checkbox"][data-save]').forEach((c,i)=>{
+    const key=location.pathname+':check:'+i;
+    c.checked=localStorage.getItem(key)==='1';
+    c.addEventListener('change',()=>localStorage.setItem(key,c.checked?'1':'0'));
+  });
+}
+function clearChecks(){
+  $$('input[type="checkbox"][data-save]').forEach((c,i)=>{c.checked=false; localStorage.removeItem(location.pathname+':check:'+i);});
+}
+document.addEventListener('DOMContentLoaded',()=>{
+  saveChecks(); applyFilter();
+  const si=$('#searchInput'); if(si){ si.addEventListener('input', applyFilter); }
+});
+</script></body></html>
