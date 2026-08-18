@@ -1,0 +1,25 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>복지·정책 연계 지원센터</title>
+<style>
+*{box-sizing:border-box}body{margin:0;background:#f5f7fb;color:#172033;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}header{background:#173b32;color:#fff;padding:18px}.top,.wrap{max-width:1050px;margin:auto}.top{display:flex;justify-content:space-between;gap:12px;align-items:center}h1{font-size:22px;margin:0}.sub{font-size:12px;line-height:1.6;color:#667085}header .sub{color:#d1fae5}.state{font-size:12px;background:#24584b;padding:7px 10px;border-radius:99px}.wrap{padding:18px 14px 48px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:14px;padding:16px;box-shadow:0 3px 14px #1018280a;margin-bottom:14px}h2{font-size:18px;margin:0 0 10px}label{display:block;font-size:12px;font-weight:800;margin:8px 0 5px}input,select,textarea{width:100%;padding:10px;border:1px solid #d0d5dd;border-radius:9px;background:#fff;font:inherit}.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}.btn{border:0;border-radius:9px;padding:10px 14px;font-weight:900;background:#16794e;color:#fff;cursor:pointer}.btn.secondary{background:#eef2f6;color:#172033;text-decoration:none;display:inline-block}.actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.ok,.box,.warn{padding:11px 12px;border-radius:10px;font-size:12px;line-height:1.65}.ok{background:#ecfdf3;color:#067647}.box{background:#eff8ff;color:#175cd3}.warn{background:#fffaeb;color:#7a4b00}.result{border:1px solid #e4e7ec;border-radius:12px;padding:13px;margin-top:10px}.pill{display:inline-block;padding:3px 7px;border-radius:99px;background:#f2f4f7;font-size:11px;font-weight:800;margin-right:4px}.empty{padding:24px;text-align:center;color:#667085;background:#f8fafc;border-radius:12px}.share{border:2px solid #a6f4c5;background:#f6fef9;border-radius:14px;padding:16px;margin-top:14px}.share textarea{min-height:190px;line-height:1.65}.statusrow{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:10px}.statusitem{border:1px solid #e4e7ec;border-radius:10px;padding:10px;font-size:12px}.ready{color:#067647;font-weight:900}.wait{color:#b54708;font-weight:900}@media(max-width:760px){.grid4,.grid2,.statusrow{grid-template-columns:1fr}.top{flex-direction:column;align-items:flex-start}}
+</style>
+</head>
+<body>
+<header><div class="top"><div><h1>복지·정책 연계 지원센터 <span style="font-size:12px;color:#a7f3d0">v0.1</span></h1><div class="sub">상담사가 내담자 조건을 간단히 입력하고 연계 가능한 복지·청년정책을 찾는 화면</div></div><div class="state">기본화면 준비 완료</div></div></header>
+<div class="wrap">
+<div class="card"><div class="actions" style="margin-top:0"><a class="btn secondary" href="job-fit-v18.html">← 채용 지원가능성 분석센터</a></div></div>
+<div class="card"><h2>1. 내담자 기본정보</h2><div class="grid4"><div><label>나이</label><input id="age" type="number" placeholder="예: 29"></div><div><label>시/도</label><select id="sido"><option value="울산광역시">울산광역시</option><option value="부산광역시">부산광역시</option><option value="경상남도">경상남도</option><option value="기타">기타</option></select></div><div><label>구·군</label><select id="sigungu"><option>전체</option><option>중구</option><option>남구</option><option>동구</option><option>북구</option><option>울주군</option></select></div><div><label>취업상태</label><select id="work"><option>미취업</option><option>재직중</option><option>단시간근로</option><option>자영업</option><option>기타</option></select></div></div><div style="margin-top:8px"><label>관심분야</label><select id="topic"><option>전체</option><option>취업·훈련</option><option>주거</option><option>금융</option><option>생계</option><option>의료</option><option>돌봄</option><option>교육·문화</option><option>청년정책</option></select></div><div class="actions"><button class="btn" id="findBtn">🎁 맞춤 복지·정책 찾기</button></div></div>
+<div class="card"><h2>2. 검색 결과</h2><div id="results" class="empty">조건을 입력하고 <b>맞춤 복지·정책 찾기</b>를 눌러주세요.</div><div id="sharePanel"></div></div>
+<div class="card"><h2>데이터 연결 상태</h2><div class="statusrow"><div class="statusitem"><b>복지로 중앙부처</b><br><span class="ready">API 신청 완료 · 연결 준비</span></div><div class="statusitem"><b>복지로 지자체</b><br><span class="ready">API 신청 완료 · 연결 준비</span></div><div class="statusitem"><b>온통청년</b><br><span class="wait">승인 대기</span></div></div><div class="sub" style="margin-top:8px">API 키가 연결되면 이 화면에서 실제 정책이 자동 검색되도록 붙일 예정입니다.</div></div>
+</div>
+<script>
+const $=id=>document.getElementById(id);
+function demo(){const age=$("age").value||"미입력",sido=$("sido").value,gu=$("sigungu").value,work=$("work").value,topic=$("topic").value;$("results").className="";$("results").innerHTML=`<div class="box"><b>검색 조건</b><br>${age}세 · ${sido} ${gu==='전체'?'':gu} · ${work} · ${topic}</div><div class="warn" style="margin-top:10px"><b>현재는 API 연결 전 단계입니다.</b><br>복지로 인증키를 연결하면 이 자리에 실제 중앙부처·지자체 복지서비스가 표시되고, 온통청년 승인 후 청년정책도 함께 검색됩니다.</div>`;$("sharePanel").innerHTML='';}
+$("findBtn").addEventListener("click",demo);
+</script>
+</body>
+</html>
