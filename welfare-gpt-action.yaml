@@ -1,4 +1,4 @@
-openapi: 3.0.1
+openapi: 3.1.0
 info:
   title: Welfare Policy Search API
   version: 1.0.0
@@ -17,14 +17,15 @@ paths:
           application/json:
             schema:
               type: object
+              additionalProperties: false
               properties:
                 action:
                   type: string
-                  enum:
-                    - search
+                  const: search
+                  default: search
                 keyword:
                   type: string
-                  description: Search keyword such as housing, youth, employment, finance, care, or livelihood.
+                  description: Search keyword such as 주거, 청년, 취업, 금융, 돌봄, 생계.
               required:
                 - action
       responses:
@@ -34,28 +35,7 @@ paths:
             application/json:
               schema:
                 type: object
-                properties:
-                  ok:
-                    type: boolean
-                  services:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        source:
-                          type: string
-                        name:
-                          type: string
-                        agency:
-                          type: string
-                        summary:
-                          type: string
-                        target:
-                          type: string
-                        category:
-                          type: string
-                        link:
-                          type: string
+                additionalProperties: true
         '400':
           description: Bad request
         '500':
