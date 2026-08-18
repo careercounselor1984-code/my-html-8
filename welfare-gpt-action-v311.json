@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Welfare Policy Search API",
-    "version": "1.0.1",
-    "description": "Search Korean central and local welfare services for counseling support."
+    "version": "1.1.0",
+    "description": "Search Korean central and local welfare services using age, region, employment status, interest area, and keyword."
   },
   "servers": [
     {
@@ -14,8 +14,8 @@
     "/": {
       "post": {
         "operationId": "searchWelfarePolicies",
-        "summary": "Search welfare policies",
-        "description": "Search central and local welfare service candidates by keyword. Results do not guarantee eligibility and must be verified against official requirements.",
+        "summary": "Search personalized welfare policies",
+        "description": "Search and rank central and local welfare service candidates using the user's age, residence, employment status, interest area, and keyword. Results do not guarantee eligibility and official requirements must be verified.",
         "requestBody": {
           "required": true,
           "content": {
@@ -27,9 +27,31 @@
                     "type": "string",
                     "enum": ["search"]
                   },
+                  "age": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 120,
+                    "description": "User age in full years. Example: 29"
+                  },
+                  "sido": {
+                    "type": "string",
+                    "description": "Province or metropolitan city. Example: 울산광역시"
+                  },
+                  "sigungu": {
+                    "type": "string",
+                    "description": "City, county, or district. Example: 북구"
+                  },
+                  "employmentStatus": {
+                    "type": "string",
+                    "description": "Employment status such as 미취업, 재직중, 단시간근로, 자영업"
+                  },
+                  "interest": {
+                    "type": "string",
+                    "description": "Main interest area such as 취업, 주거, 금융, 생계, 의료, 돌봄, 교육, 청년"
+                  },
                   "keyword": {
                     "type": "string",
-                    "description": "Search keyword such as 주거, 청년, 취업, 금융, 돌봄, 생계"
+                    "description": "Optional additional search keyword extracted from the user's question"
                   }
                 },
                 "required": ["action"],
@@ -46,21 +68,40 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "ok": {
-                      "type": "boolean"
+                    "ok": {"type": "boolean"},
+                    "profile": {
+                      "type": "object",
+                      "properties": {
+                        "age": {"type": "integer"},
+                        "sido": {"type": "string"},
+                        "sigungu": {"type": "string"},
+                        "employmentStatus": {"type": "string"},
+                        "interest": {"type": "string"},
+                        "keyword": {"type": "string"}
+                      }
                     },
+                    "queries": {
+                      "type": "array",
+                      "items": {"type": "string"}
+                    },
+                    "total": {"type": "integer"},
                     "services": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "source": { "type": "string" },
-                          "name": { "type": "string" },
-                          "agency": { "type": "string" },
-                          "summary": { "type": "string" },
-                          "target": { "type": "string" },
-                          "category": { "type": "string" },
-                          "link": { "type": "string" }
+                          "source": {"type": "string"},
+                          "name": {"type": "string"},
+                          "agency": {"type": "string"},
+                          "summary": {"type": "string"},
+                          "target": {"type": "string"},
+                          "category": {"type": "string"},
+                          "link": {"type": "string"},
+                          "matchScore": {"type": "integer"},
+                          "matchReasons": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                          }
                         }
                       }
                     }
@@ -69,12 +110,8 @@
               }
             }
           },
-          "400": {
-            "description": "Bad request"
-          },
-          "500": {
-            "description": "Server error"
-          }
+          "400": {"description": "Bad request"},
+          "500": {"description": "Server error"}
         }
       }
     }
