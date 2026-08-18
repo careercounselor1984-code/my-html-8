@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Welfare Policy Search API",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "description": "Search Korean central, local, and connected youth-policy services using age, gender, residence, employment, household and child information."
   },
   "servers": [
@@ -15,7 +15,7 @@
       "post": {
         "operationId": "searchWelfarePolicies",
         "summary": "Search personalized welfare and youth policies",
-        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Ranking can use age, gender, residence, employment, marital/household status, child presence and child ages. Results never guarantee eligibility; official requirements and current application dates must be verified.",
+        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Ranking can use age, gender, residence, employment, marital/household status, child presence and child ages. Mental-health interest may include psychological counseling, mental health, emotional support, depression/anxiety/stress and related local services. Results never guarantee eligibility; official requirements and current application dates must be verified.",
         "requestBody": {
           "required": true,
           "content": {
@@ -44,7 +44,7 @@
                   },
                   "sigungu": {
                     "type": "string",
-                    "description": "City, county, or district. Example: 북구"
+                    "description": "City, county, or district. Example: 북구. When provided, prioritize this locality and avoid other locality-only programs."
                   },
                   "employmentStatus": {
                     "type": "string",
@@ -78,7 +78,7 @@
                   },
                   "interest": {
                     "type": "string",
-                    "description": "Main interest area such as 취업·훈련, 주거, 금융, 생계, 의료, 돌봄, 교육·문화, 청년정책"
+                    "description": "Main interest area such as 취업·훈련, 주거, 금융, 생계, 의료, 심리·마음건강, 돌봄, 교육·문화, 청년정책"
                   },
                   "keyword": {
                     "type": "string",
