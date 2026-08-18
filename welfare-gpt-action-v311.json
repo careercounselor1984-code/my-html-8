@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Welfare Policy Search API",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "Search Korean central and local welfare services for counseling support."
   },
   "servers": [
@@ -32,7 +32,8 @@
                     "description": "Search keyword such as 주거, 청년, 취업, 금융, 돌봄, 생계"
                   }
                 },
-                "required": ["action"]
+                "required": ["action"],
+                "additionalProperties": false
               }
             }
           }
@@ -43,7 +44,27 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "services": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "source": { "type": "string" },
+                          "name": { "type": "string" },
+                          "agency": { "type": "string" },
+                          "summary": { "type": "string" },
+                          "target": { "type": "string" },
+                          "category": { "type": "string" },
+                          "link": { "type": "string" }
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }
