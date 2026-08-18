@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Welfare Policy Search API",
-    "version": "1.1.0",
-    "description": "Search Korean central and local welfare services using age, region, employment status, interest area, and keyword."
+    "version": "1.2.0",
+    "description": "Search Korean central, local, and connected youth-policy services using age, gender, residence, employment, household and child information."
   },
   "servers": [
     {
@@ -14,8 +14,8 @@
     "/": {
       "post": {
         "operationId": "searchWelfarePolicies",
-        "summary": "Search personalized welfare policies",
-        "description": "Search and rank central and local welfare service candidates using the user's age, residence, employment status, interest area, and keyword. Results do not guarantee eligibility and official requirements must be verified.",
+        "summary": "Search personalized welfare and youth policies",
+        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Ranking can use age, gender, residence, employment, marital/household status and child ages. Results never guarantee eligibility; official requirements and current application dates must be verified.",
         "requestBody": {
           "required": true,
           "content": {
@@ -33,6 +33,11 @@
                     "maximum": 120,
                     "description": "User age in full years. Example: 29"
                   },
+                  "gender": {
+                    "type": "string",
+                    "enum": ["선택 안함", "여성", "남성"],
+                    "description": "Optional gender used only when a policy explicitly has gender-related targeting."
+                  },
                   "sido": {
                     "type": "string",
                     "description": "Province or metropolitan city. Example: 울산광역시"
@@ -43,11 +48,32 @@
                   },
                   "employmentStatus": {
                     "type": "string",
-                    "description": "Employment status such as 미취업, 재직중, 단시간근로, 자영업"
+                    "description": "Employment status such as 미취업, 재직중, 단시간근로, 프리랜서, 일용근로, 자영업, 예비창업"
+                  },
+                  "maritalStatus": {
+                    "type": "string",
+                    "enum": ["선택 안함", "미혼", "기혼", "기타"],
+                    "description": "Optional marital status. Do not infer if the user did not provide it."
+                  },
+                  "householdType": {
+                    "type": "string",
+                    "enum": ["선택 안함", "1인가구", "부부", "부부+자녀", "한부모", "조손가구", "기타"],
+                    "description": "Optional household type used for policy prioritization."
+                  },
+                  "childrenAges": {
+                    "type": "array",
+                    "items": {"type": "integer", "minimum": 0, "maximum": 30},
+                    "maxItems": 8,
+                    "description": "Optional full ages of children. Example: [2, 6]. Use only when explicitly provided."
+                  },
+                  "annualIncome": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Optional annual income in 10,000 KRW units. Used only as a counseling clue, not an eligibility determination."
                   },
                   "interest": {
                     "type": "string",
-                    "description": "Main interest area such as 취업, 주거, 금융, 생계, 의료, 돌봄, 교육, 청년"
+                    "description": "Main interest area such as 취업·훈련, 주거, 금융, 생계, 의료, 돌봄, 교육·문화, 청년정책"
                   },
                   "keyword": {
                     "type": "string",
@@ -69,28 +95,16 @@
                   "type": "object",
                   "properties": {
                     "ok": {"type": "boolean"},
-                    "profile": {
-                      "type": "object",
-                      "properties": {
-                        "age": {"type": "integer"},
-                        "sido": {"type": "string"},
-                        "sigungu": {"type": "string"},
-                        "employmentStatus": {"type": "string"},
-                        "interest": {"type": "string"},
-                        "keyword": {"type": "string"}
-                      }
-                    },
-                    "queries": {
-                      "type": "array",
-                      "items": {"type": "string"}
-                    },
+                    "profile": {"type": "object", "additionalProperties": true},
+                    "queries": {"type": "array", "items": {"type": "string"}},
+                    "sources": {"type": "object", "additionalProperties": {"type": "boolean"}},
                     "total": {"type": "integer"},
                     "services": {
                       "type": "array",
                       "items": {
                         "type": "object",
                         "properties": {
-                          "source": {"type": "string"},
+                          "source": {"type": "string", "description": "중앙부처, 지자체, or 온통청년"},
                           "name": {"type": "string"},
                           "agency": {"type": "string"},
                           "summary": {"type": "string"},
@@ -98,10 +112,8 @@
                           "category": {"type": "string"},
                           "link": {"type": "string"},
                           "matchScore": {"type": "integer"},
-                          "matchReasons": {
-                            "type": "array",
-                            "items": {"type": "string"}
-                          }
+                          "matchReasons": {"type": "array", "items": {"type": "string"}},
+                          "matchWarnings": {"type": "array", "items": {"type": "string"}}
                         }
                       }
                     }
