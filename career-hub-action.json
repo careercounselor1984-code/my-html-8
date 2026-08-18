@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "GoodJob Career Hub API",
-    "version": "2.0.0",
+    "version": "2.1.0",
     "description": "Unified read-only API for Korean recruitment, welfare, and startup-support counseling data. It can search ALIO, CleanEye, stored corporate recruitment data, create job-market snapshots, search welfare policies, and search K-Startup support announcements. Results are for counseling support and do not guarantee eligibility, selection, or hiring outcomes."
   },
   "servers": [
@@ -28,7 +28,7 @@
                   },
                   "keyword": {"type": "string", "description": "Job, occupation, policy, startup-support, or search keyword"},
                   "region": {"type": "string", "description": "Recruitment or startup-support region, e.g. 울산, 부산, 경남, 전국"},
-                  "source": {"type": "string", "enum": ["all", "alio", "cleaneye", "corporate", "saramin"]},
+                  "source": {"type": "string", "enum": ["all", "alio", "cleaneye", "corporate"]},
                   "limit": {"type": "integer", "minimum": 1, "maximum": 50},
                   "age": {"type": "integer"},
                   "sido": {"type": "string"},
