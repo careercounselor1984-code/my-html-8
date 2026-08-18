@@ -1,0 +1,73 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "GoodJob Career Hub API",
+    "version": "1.0.0",
+    "description": "Unified read-only API for Korean recruitment and welfare counseling data. It can search ALIO, CleanEye, corporate recruitment data, create job-market snapshots, and search welfare policies. Results are for counseling support and do not guarantee eligibility or hiring outcomes."
+  },
+  "servers": [
+    {
+      "url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/career-hub"
+    }
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "operationId": "useCareerHub",
+        "summary": "Search integrated career and welfare data",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": ["status", "search_jobs", "role_snapshot", "search_welfare"]
+                  },
+                  "keyword": {"type": "string", "description": "Job, occupation, policy, or search keyword"},
+                  "region": {"type": "string", "description": "Recruitment search region, e.g. 울산, 부산, 경남"},
+                  "source": {"type": "string", "enum": ["all", "alio", "cleaneye", "corporate", "saramin"]},
+                  "limit": {"type": "integer", "minimum": 1, "maximum": 50},
+                  "age": {"type": "integer"},
+                  "sido": {"type": "string"},
+                  "sigungu": {"type": "string"},
+                  "employmentStatus": {"type": "string"},
+                  "interest": {"type": "string"}
+                },
+                "required": ["action"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {"type": "boolean"},
+                    "version": {"type": "string"},
+                    "total": {"type": "integer"},
+                    "jobs": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+                    "services": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+                    "topTitles": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+                    "sourceCounts": {"type": "object", "additionalProperties": true},
+                    "modules": {"type": "object", "additionalProperties": true}
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {"description": "Bad request"},
+          "500": {"description": "Server error"}
+        }
+      }
+    }
+  }
+}
