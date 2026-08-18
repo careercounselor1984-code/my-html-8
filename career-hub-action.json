@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "GoodJob Career Hub API",
-    "version": "1.0.0",
-    "description": "Unified read-only API for Korean recruitment and welfare counseling data. It can search ALIO, CleanEye, corporate recruitment data, create job-market snapshots, and search welfare policies. Results are for counseling support and do not guarantee eligibility or hiring outcomes."
+    "version": "2.0.0",
+    "description": "Unified read-only API for Korean recruitment, welfare, and startup-support counseling data. It can search ALIO, CleanEye, stored corporate recruitment data, create job-market snapshots, search welfare policies, and search K-Startup support announcements. Results are for counseling support and do not guarantee eligibility, selection, or hiring outcomes."
   },
   "servers": [
     {
@@ -14,7 +14,7 @@
     "/": {
       "post": {
         "operationId": "useCareerHub",
-        "summary": "Search integrated career and welfare data",
+        "summary": "Search integrated career, welfare, and startup-support data",
         "requestBody": {
           "required": true,
           "content": {
@@ -24,17 +24,25 @@
                 "properties": {
                   "action": {
                     "type": "string",
-                    "enum": ["status", "search_jobs", "role_snapshot", "search_welfare"]
+                    "enum": ["status", "search_jobs", "role_snapshot", "search_welfare", "search_startup"]
                   },
-                  "keyword": {"type": "string", "description": "Job, occupation, policy, or search keyword"},
-                  "region": {"type": "string", "description": "Recruitment search region, e.g. 울산, 부산, 경남"},
+                  "keyword": {"type": "string", "description": "Job, occupation, policy, startup-support, or search keyword"},
+                  "region": {"type": "string", "description": "Recruitment or startup-support region, e.g. 울산, 부산, 경남, 전국"},
                   "source": {"type": "string", "enum": ["all", "alio", "cleaneye", "corporate", "saramin"]},
                   "limit": {"type": "integer", "minimum": 1, "maximum": 50},
                   "age": {"type": "integer"},
                   "sido": {"type": "string"},
                   "sigungu": {"type": "string"},
                   "employmentStatus": {"type": "string"},
-                  "interest": {"type": "string"}
+                  "interest": {"type": "string"},
+                  "startupStage": {"type": "string", "description": "Startup stage or business age, e.g. 예비창업자, 1년 미만, 3년 미만, 7년 미만"},
+                  "supportArea": {"type": "string", "description": "Startup support area, e.g. 사업화, 시설·공간·보육, 멘토링·컨설팅·교육, 융자, 행사·네트워크"},
+                  "ageGroup": {"type": "string", "description": "Target age group, e.g. 만 20세 이상 ~ 만 39세 이하, 만 40세 이상"},
+                  "applicant": {"type": "string", "description": "Applicant target keyword such as 청년, 대학생, 일반인"},
+                  "preference": {"type": "string", "description": "Preferential-condition keyword"},
+                  "recruitingOnly": {"type": "boolean", "description": "For K-Startup, true searches recruiting announcements only"},
+                  "startDateFrom": {"type": "string", "description": "Announcement reception start date lower bound in yyyyMMdd"},
+                  "endDateTo": {"type": "string", "description": "Announcement reception end date upper bound in yyyyMMdd"}
                 },
                 "required": ["action"],
                 "additionalProperties": false
@@ -53,11 +61,15 @@
                     "ok": {"type": "boolean"},
                     "version": {"type": "string"},
                     "total": {"type": "integer"},
+                    "totalCount": {"type": "integer"},
+                    "returned": {"type": "integer"},
                     "jobs": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
                     "services": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+                    "programs": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
                     "topTitles": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
                     "sourceCounts": {"type": "object", "additionalProperties": true},
-                    "modules": {"type": "object", "additionalProperties": true}
+                    "modules": {"type": "object", "additionalProperties": true},
+                    "query": {"type": "object", "additionalProperties": true}
                   },
                   "additionalProperties": true
                 }
