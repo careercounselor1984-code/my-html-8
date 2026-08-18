@@ -1,0 +1,61 @@
+openapi: 3.1.0
+info:
+  title: 복지·정책 검색 API
+  version: 1.0.0
+  description: 중앙부처 및 지자체 복지서비스를 검색하는 상담지원 API입니다.
+servers:
+  - url: https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-proxy
+paths:
+  /:
+    post:
+      operationId: searchWelfarePolicies
+      summary: 복지·정책 검색
+      description: 사용자의 관심분야와 검색어를 기준으로 중앙부처 및 지자체 복지서비스 후보를 검색합니다. 검색 결과는 수급자격을 확정하지 않으며 공식 상세요건 확인이 필요합니다.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                action:
+                  type: string
+                  enum: [search]
+                  default: search
+                keyword:
+                  type: string
+                  description: 검색 키워드. 예: 주거, 청년, 취업, 금융, 돌봄, 생계
+              required: [action]
+      responses:
+        '200':
+          description: 검색 성공
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  services:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        source:
+                          type: string
+                        name:
+                          type: string
+                        agency:
+                          type: string
+                        summary:
+                          type: string
+                        target:
+                          type: string
+                        category:
+                          type: string
+                        link:
+                          type: string
+        '400':
+          description: 잘못된 요청
+        '500':
+          description: 서버 오류
