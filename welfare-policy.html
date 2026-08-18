@@ -9,7 +9,7 @@
 </style>
 </head>
 <body>
-<header><div class="top"><div><h1>복지·정책 연계 지원센터 <span style="font-size:12px;color:#a7f3d0">v0.5</span></h1><div class="sub">나이·지역·취업상태·관심분야를 기준으로 맞춤 복지·고용·청년정책 후보를 찾습니다.</div></div><div id="state" class="state">연결 확인 중</div></div></header>
+<header><div class="top"><div><h1>복지·정책 연계 지원센터 <span style="font-size:12px;color:#a7f3d0">v0.6</span></h1><div class="sub">나이·지역·취업상태·관심분야를 기준으로 맞춤 복지·고용·청년정책 후보를 찾습니다.</div></div><div id="state" class="state">연결 확인 중</div></div></header>
 <div class="wrap">
 <div class="card"><div class="actions" style="margin-top:0"><a class="btn secondary" href="job-fit-v18.html">← 채용 지원가능성 분석센터</a></div></div>
 <div class="card">
@@ -22,7 +22,7 @@
 </div>
 <div style="margin-top:8px"><label>관심분야</label><select id="topic"><option>전체</option><option>취업·훈련</option><option>주거</option><option>금융</option><option>생계</option><option>의료</option><option>돌봄</option><option>교육·문화</option><option>청년정책</option></select></div>
 <div class="actions"><button class="btn" id="findBtn">🎁 맞춤 복지·정책 찾기</button><button class="btn ai" id="aiBtn">💬 AI 상담 질문 만들기</button><button class="btn ai" id="openGptBtn" disabled>✨ AI로 더 자세히 보기</button></div>
-<div class="notice" id="gptNotice"><b>AI 상담 연동 준비 중</b><br>전용 GPT 공개 검토가 완료되면 ‘AI로 더 자세히 보기’ 버튼이 바로 활성화됩니다. 지금은 ‘AI 상담 질문 만들기’로 질문을 복사해 사용할 수 있습니다.</div>
+<div class="notice" id="gptNotice"><b>AI 상담 연동 완료</b><br>검색 결과를 확인한 뒤 질문을 복사하고 ‘AI로 더 자세히 보기’를 눌러 전용 GPT에서 추가 검토할 수 있습니다.</div>
 <div id="aiPanel"></div>
 </div>
 <div class="card">
@@ -35,7 +35,7 @@
 </div>
 <script>
 const API='https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-proxy';
-const GPT_URL=''; // 공개 승인 후 GPT 링크만 여기에 입력하면 버튼이 자동 활성화됨
+const GPT_URL='https://chatgpt.com/g/g-694a13799fe4819194f119281fe4b701-bogji-jeongcaeg-ai-sangdam';
 const $=id=>document.getElementById(id),E=s=>String(s??'').replace(/[&<>"']/g,m=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[m]));
 const TOPIC={"전체":"","취업·훈련":"취업","주거":"주거","금융":"금융","생계":"생계","의료":"의료","돌봄":"돌봄","교육·문화":"교육","청년정책":"청년"};
 const DISTRICTS={"울산광역시":["전체","중구","남구","동구","북구","울주군"],"부산광역시":["전체","중구","서구","동구","영도구","부산진구","동래구","남구","북구","해운대구","사하구","금정구","강서구","연제구","수영구","사상구","기장군"],"경상남도":["전체","창원시","진주시","통영시","사천시","김해시","밀양시","거제시","양산시","의령군","함안군","창녕군","고성군","남해군","하동군","산청군","함양군","거창군","합천군"],"서울특별시":["전체","종로구","중구","용산구","성동구","광진구","동대문구","중랑구","성북구","강북구","도봉구","노원구","은평구","서대문구","마포구","양천구","강서구","구로구","금천구","영등포구","동작구","관악구","서초구","강남구","송파구","강동구"],"경기도":["전체","수원시","성남시","의정부시","안양시","부천시","광명시","평택시","동두천시","안산시","고양시","과천시","구리시","남양주시","오산시","시흥시","군포시","의왕시","하남시","용인시","파주시","이천시","안성시","김포시","화성시","광주시","양주시","포천시","여주시","연천군","가평군","양평군"],"기타":["전체"]};
