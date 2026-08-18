@@ -2,7 +2,7 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Welfare Policy Search API",
-    "version": "1.2.0",
+    "version": "1.2.1",
     "description": "Search Korean central, local, and connected youth-policy services using age, gender, residence, employment, household and child information."
   },
   "servers": [
@@ -15,7 +15,7 @@
       "post": {
         "operationId": "searchWelfarePolicies",
         "summary": "Search personalized welfare and youth policies",
-        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Ranking can use age, gender, residence, employment, marital/household status and child ages. Results never guarantee eligibility; official requirements and current application dates must be verified.",
+        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Ranking can use age, gender, residence, employment, marital/household status, child presence and child ages. Results never guarantee eligibility; official requirements and current application dates must be verified.",
         "requestBody": {
           "required": true,
           "content": {
@@ -59,6 +59,11 @@
                     "type": "string",
                     "enum": ["선택 안함", "1인가구", "부부", "부부+자녀", "한부모", "조손가구", "기타"],
                     "description": "Optional household type used for policy prioritization."
+                  },
+                  "hasChildren": {
+                    "type": "string",
+                    "enum": ["선택 안함", "없음", "있음"],
+                    "description": "Optional explicit child-presence status. Do not infer if the user did not provide it."
                   },
                   "childrenAges": {
                     "type": "array",
