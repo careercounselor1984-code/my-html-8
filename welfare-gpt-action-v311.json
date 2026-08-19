@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Welfare Policy Search API",
-    "version": "1.2.3",
-    "description": "Search Korean central, local, and connected youth-policy services using age, gender, residence, employment, household and child information. The backend also filters clearly irrelevant special-target programs unless the user's stated conditions match them."
+    "version": "1.2.4",
+    "description": "Search Korean central, local, and Ontong Youth policies using user-provided demographic, regional, employment, household and child information."
   },
   "servers": [
     {
@@ -15,7 +15,7 @@
       "post": {
         "operationId": "searchWelfarePolicies",
         "summary": "Search personalized welfare and youth policies",
-        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Use every user condition that was explicitly provided. Ranking can use age, gender, residence, employment, marital/household status, child presence and child ages. Mental-health interest includes psychological counseling, mental health, emotional support, depression/anxiety/stress and related local services. Clearly special-target programs such as veterans, industrial-accident victims, military-duty subjects, defectors, multicultural families, disability, foster/adoptive families or other named target groups are excluded unless the user actually states a matching condition. Results never guarantee eligibility; official requirements and current application dates must be verified.",
+        "description": "Search and rank central, local and Ontong Youth policies. Use only conditions the user explicitly provided. Special-target programs are filtered unless the user states a matching condition. Results are counseling candidates, not final eligibility decisions.",
         "requestBody": {
           "required": true,
           "content": {
@@ -36,7 +36,7 @@
                   "gender": {
                     "type": "string",
                     "enum": ["선택 안함", "여성", "남성"],
-                    "description": "Optional gender used only when a policy explicitly has gender-related targeting."
+                    "description": "Optional gender. Use only when explicitly provided."
                   },
                   "sido": {
                     "type": "string",
@@ -44,7 +44,7 @@
                   },
                   "sigungu": {
                     "type": "string",
-                    "description": "City, county, or district. Example: 북구. When provided, prioritize this locality and avoid other locality-only programs."
+                    "description": "City, county or district. Example: 북구. Avoid programs limited to another locality."
                   },
                   "employmentStatus": {
                     "type": "string",
@@ -53,36 +53,36 @@
                   "maritalStatus": {
                     "type": "string",
                     "enum": ["선택 안함", "미혼", "기혼", "기타"],
-                    "description": "Optional marital status. Do not infer if the user did not provide it."
+                    "description": "Optional marital status. Do not infer it."
                   },
                   "householdType": {
                     "type": "string",
                     "enum": ["선택 안함", "1인가구", "부부", "부부+자녀", "한부모", "조손가구", "기타"],
-                    "description": "Optional household type used for policy prioritization."
+                    "description": "Optional household type for policy matching."
                   },
                   "hasChildren": {
                     "type": "string",
                     "enum": ["선택 안함", "없음", "있음"],
-                    "description": "Optional explicit child-presence status. Do not infer if the user did not provide it."
+                    "description": "Optional child-presence status. Do not infer it."
                   },
                   "childrenAges": {
                     "type": "array",
                     "items": {"type": "integer", "minimum": 0, "maximum": 30},
                     "maxItems": 8,
-                    "description": "Optional full ages of children. Example: [2, 6]. Use only when explicitly provided."
+                    "description": "Optional full ages of children. Example: [2, 6]."
                   },
                   "annualIncome": {
                     "type": "integer",
                     "minimum": 0,
-                    "description": "Optional annual income in 10,000 KRW units. Used only as a counseling clue, not an eligibility determination."
+                    "description": "Optional annual income in 10,000 KRW units. Not a final eligibility test."
                   },
                   "interest": {
                     "type": "string",
-                    "description": "Main interest area such as 취업·훈련, 주거, 금융, 생계, 의료, 심리·마음건강, 돌봄, 교육·문화, 청년정책"
+                    "description": "Interest area: 취업·훈련, 주거, 금융, 생계, 의료, 심리·마음건강, 돌봄, 교육·문화, 청년정책"
                   },
                   "keyword": {
                     "type": "string",
-                    "description": "Optional additional search keyword from the user's own words. IMPORTANT: when the user explicitly states a special target or status such as 산재, 보훈, 국가유공, 장애, 병역의무, 북한이탈, 다문화, 입양, 가정위탁, 자립준비 or 보호종료, include that exact concept here so matching special-target programs can be included. Do not invent special-target status."
+                    "description": "Optional keyword from the user's own words. If the user explicitly states a special status such as 산재, 보훈, 장애, 병역의무, 북한이탈, 다문화, 입양, 가정위탁 or 자립준비, include that concept here. Never invent special-target status."
                   }
                 },
                 "required": ["action"],
