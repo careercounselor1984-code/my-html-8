@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "Welfare Policy Search API",
-    "version": "1.2.2",
-    "description": "Search Korean central, local, and connected youth-policy services using age, gender, residence, employment, household and child information."
+    "version": "1.2.3",
+    "description": "Search Korean central, local, and connected youth-policy services using age, gender, residence, employment, household and child information. The backend also filters clearly irrelevant special-target programs unless the user's stated conditions match them."
   },
   "servers": [
     {
@@ -15,7 +15,7 @@
       "post": {
         "operationId": "searchWelfarePolicies",
         "summary": "Search personalized welfare and youth policies",
-        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Ranking can use age, gender, residence, employment, marital/household status, child presence and child ages. Mental-health interest may include psychological counseling, mental health, emotional support, depression/anxiety/stress and related local services. Results never guarantee eligibility; official requirements and current application dates must be verified.",
+        "description": "Search and rank central welfare, local welfare, and Ontong Youth policy candidates. Use every user condition that was explicitly provided. Ranking can use age, gender, residence, employment, marital/household status, child presence and child ages. Mental-health interest includes psychological counseling, mental health, emotional support, depression/anxiety/stress and related local services. Clearly special-target programs such as veterans, industrial-accident victims, military-duty subjects, defectors, multicultural families, disability, foster/adoptive families or other named target groups are excluded unless the user actually states a matching condition. Results never guarantee eligibility; official requirements and current application dates must be verified.",
         "requestBody": {
           "required": true,
           "content": {
@@ -82,7 +82,7 @@
                   },
                   "keyword": {
                     "type": "string",
-                    "description": "Optional additional search keyword extracted from the user's question"
+                    "description": "Optional additional search keyword from the user's own words. IMPORTANT: when the user explicitly states a special target or status such as 산재, 보훈, 국가유공, 장애, 병역의무, 북한이탈, 다문화, 입양, 가정위탁, 자립준비 or 보호종료, include that exact concept here so matching special-target programs can be included. Do not invent special-target status."
                   }
                 },
                 "required": ["action"],
