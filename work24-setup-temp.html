@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>고용24 API 연결 설정</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","Noto Sans KR",sans-serif;background:#f5f7f6;color:#17202a}.wrap{max-width:720px;margin:48px auto;padding:0 18px}.card{background:#fff;border:1px solid #dfe5ea;border-radius:16px;padding:28px;box-shadow:0 8px 30px rgba(0,0,0,.05)}h1{font-size:24px;margin:0 0 8px}p{color:#5b6670;line-height:1.6}.field{margin:22px 0}label{font-weight:700;display:block;margin-bottom:8px}input{width:100%;box-sizing:border-box;padding:13px 14px;border:1px solid #bbc5cf;border-radius:10px;font-size:15px}button{border:0;border-radius:10px;padding:12px 16px;font-weight:700;cursor:pointer;background:#0d6b4d;color:#fff}.status{margin-top:10px;padding:12px;border-radius:10px;background:#f1f4f6;white-space:pre-wrap}.ok{background:#eaf7f0;color:#12623f}.bad{background:#fff0f0;color:#a32929}.small{font-size:13px}.notice{padding:12px 14px;background:#fff7df;border-radius:10px;color:#6c5420;font-size:13px;line-height:1.5}</style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+<h1>고용24 API 연결</h1>
+<p>발급받은 인증키를 붙여넣으면 연결 확인 후 서버에 저장합니다. 인증키는 공개 페이지나 GitHub 소스에 저장되지 않습니다.</p>
+<div class="notice">설정이 끝나면 이 임시 페이지는 삭제할 예정입니다.</div>
+<div class="field"><label>국민내일배움카드 훈련과정 인증키</label><input id="training" type="password" autocomplete="off" placeholder="인증키 붙여넣기"><button onclick="save('training')">연결 테스트 및 저장</button><div id="trainingStatus" class="status">상태 확인 중...</div></div>
+<div class="field"><label>공통코드 인증키</label><input id="common" type="password" autocomplete="off" placeholder="인증키 붙여넣기"><button onclick="save('common')">연결 테스트 및 저장</button><div id="commonStatus" class="status">상태 확인 중...</div></div>
+<p class="small">※ 저장 후 인증키는 이 화면에 다시 표시되지 않습니다.</p>
+</div></div>
+<script>
+const ENDPOINT='https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/work24-proxy';
+const SETUP_TOKEN='w24-setup-6Hk9Qp3Xv7Lm2Rt5Ns8Y';
+async function api(body){const r=await fetch(ENDPOINT,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({...body,setupToken:SETUP_TOKEN})});return await r.json()}
+function setStatus(id,text,kind=''){const el=document.getElementById(id);el.textContent=text;el.className='status '+kind}
+async function refresh(){try{const d=await api({action:'setup_status'});setStatus('trainingStatus',d.training?'연결됨':'아직 저장되지 않음',d.training?'ok':'');setStatus('commonStatus',d.common?'연결됨':'아직 저장되지 않음',d.common?'ok':'')}catch(e){setStatus('trainingStatus','상태 확인 실패','bad');setStatus('commonStatus','상태 확인 실패','bad')}}
+async function save(type){const el=document.getElementById(type),st=type+'Status';if(!el.value.trim()){setStatus(st,'인증키를 입력해주세요.','bad');return}setStatus(st,'연결 확인 중...');const d=await api({action:type==='training'?'save_training_key':'save_common_key',serviceKey:el.value.trim()});if(d.ok){setStatus(st,'연결 테스트 성공 · 저장 완료','ok');el.value=''}else setStatus(st,d.error||'연결 실패','bad')}
+refresh();
+</script>
+</body></html>
