@@ -2,12 +2,12 @@
   "openapi": "3.1.1",
   "info": {
     "title": "GoodJob Job Fit Strategy API",
-    "version": "1.0.0",
-    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It searches current recruitment data and creates role-market snapshots. The website's job-fit verdict remains the primary assessment; this API is for supplementary job discovery and market context only."
+    "version": "1.1.0",
+    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It searches current recruitment data with role-relevance filtering and creates role-market snapshots. The website's job-fit verdict remains the primary assessment; this API is for supplementary job discovery and market context only."
   },
   "servers": [
     {
-      "url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/career-hub"
+      "url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/job-fit-career-hub"
     }
   ],
   "paths": {
@@ -29,7 +29,7 @@
                   },
                   "keyword": {
                     "type": "string",
-                    "description": "Job title, occupation, company, certification, or recruitment keyword such as 생산, 전기, 품질, 회계, 근로복지공단"
+                    "description": "Job title, occupation, company, certification, or recruitment keyword. Multiple related role terms can be separated by spaces, commas, vertical bars, or slashes."
                   },
                   "region": {
                     "type": "string",
@@ -39,6 +39,11 @@
                     "type": "string",
                     "enum": ["all", "alio", "cleaneye", "corporate"],
                     "description": "Recruitment data source"
+                  },
+                  "matchMode": {
+                    "type": "string",
+                    "enum": ["broad", "role"],
+                    "description": "Use role for occupation-focused searches so a keyword appearing only in qualifications or preferences is excluded. Use broad for company-name or general keyword searches."
                   },
                   "limit": {
                     "type": "integer",
@@ -64,7 +69,7 @@
                     "ok": {"type": "boolean"},
                     "version": {"type": "string"},
                     "total": {"type": "integer"},
-                    "returned": {"type": "integer"},
+                    "sampleCount": {"type": "integer"},
                     "jobs": {
                       "type": "array",
                       "items": {"type": "object", "additionalProperties": true}
@@ -74,6 +79,15 @@
                       "items": {"type": "object", "additionalProperties": true}
                     },
                     "sourceCounts": {"type": "object", "additionalProperties": true},
+                    "quality": {
+                      "type": "object",
+                      "description": "Counts for high-confidence direct matches, related results needing review, and ALIO multi-role/multi-region pairings that need official-posting verification.",
+                      "additionalProperties": true
+                    },
+                    "cautions": {
+                      "type": "array",
+                      "items": {"type": "string"}
+                    },
                     "modules": {"type": "object", "additionalProperties": true},
                     "query": {"type": "object", "additionalProperties": true}
                   },
