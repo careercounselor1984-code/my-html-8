@@ -1,9 +1,9 @@
 {
-  "openapi": "3.1.1",
+  "openapi": "3.1.0",
   "info": {
     "title": "Welfare Policy Search and Eligibility API",
-    "version": "2.0.1",
-    "description": "Search Korean welfare policies and perform conservative second-stage eligibility screening using only user-provided facts."
+    "version": "2.1.0",
+    "description": "Search Korean welfare policies, run conservative eligibility screening, apply 2026 detail checks, and return practical application guidance using only user-provided facts."
   },
   "servers": [
     {"url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-router"}
@@ -12,7 +12,7 @@
     "/": {
       "post": {
         "operationId": "searchOrDiagnoseWelfarePolicies",
-        "summary": "Search policies or run second-stage eligibility screening",
+        "summary": "Search policies or run eligibility diagnosis with execution guidance",
         "description": "Use action=search for first-stage policy search and action=diagnose for follow-up eligibility screening. For broad requests use interest=전체. Never infer missing personal facts.",
         "requestBody": {
           "required": true,
@@ -46,6 +46,7 @@
                   "assetsTotal": {"type": "integer", "minimum": 0},
                   "householdSize": {"type": "integer", "minimum": 1, "maximum": 20},
                   "householdMonthlyIncome": {"type": "integer", "minimum": 0},
+                  "householdAssetsTotal": {"type": "integer", "minimum": 0},
                   "priorityWelfareStatus": {"type": "array", "items": {"type": "string"}},
                   "crisisReason": {"type": "string"},
                   "medicalExpenseNeed": {"type": "boolean"},
@@ -69,10 +70,9 @@
                     "mode": {"type": "string"},
                     "responseMode": {"type": "string"},
                     "masterResult": {"type": "boolean"},
-                    "interest": {"type": "string"},
-                    "total": {"type": "integer"},
-                    "finalAuditVersion": {"type": "string"},
                     "diagnosisVersion": {"type": "string"},
+                    "detailCriteriaVersion": {"type": "string"},
+                    "executionGuideVersion": {"type": "string"},
                     "services": {
                       "type": "array",
                       "items": {
@@ -80,23 +80,11 @@
                         "properties": {
                           "id": {"type": "string"},
                           "name": {"type": "string"},
-                          "source": {"type": "string"},
-                          "agency": {"type": "string"},
+                          "displayRank": {"type": "integer"},
                           "summary": {"type": "string"},
                           "support": {"type": "string"},
-                          "target": {"type": "string"},
-                          "qualificationDetails": {"type": "string"},
-                          "applicationMethod": {"type": "string"},
-                          "contact": {"type": "string"},
-                          "category": {"type": "string"},
-                          "region": {"type": "string"},
-                          "applicationPeriod": {"type": "string"},
-                          "displayRank": {"type": "integer"},
-                          "recommendationTier": {"type": "string"},
-                          "recommendationReason": {"type": "string"},
                           "officialUrl": {"type": "string"},
                           "officialUrlLine": {"type": "string"},
-                          "mustPrintOfficialUrl": {"type": "boolean"},
                           "eligibilityAssessment": {
                             "type": "object",
                             "properties": {
@@ -107,29 +95,45 @@
                               "caution": {"type": "string"}
                             },
                             "additionalProperties": true
+                          },
+                          "detailScreening": {
+                            "type": "object",
+                            "properties": {
+                              "detailStatus": {"type": "string"},
+                              "officialCriteriaYear": {"type": "integer"},
+                              "incomeThreshold": {"type": "number"},
+                              "incomeLimit75Percent": {"type": "number"},
+                              "simpleIncomeComparison": {"type": "string"},
+                              "incomeCheck": {"type": "string"},
+                              "reason": {"type": "string"},
+                              "officialRule": {"type": "string"},
+                              "missingFields": {"type": "array", "items": {"type": "string"}},
+                              "caution": {"type": "string"},
+                              "sourceLabel": {"type": "string"}
+                            },
+                            "additionalProperties": true
+                          },
+                          "executionGuide": {
+                            "type": "object",
+                            "properties": {
+                              "actionStatus": {"type": "string"},
+                              "nextAction": {"type": "string"},
+                              "applicationChannel": {"type": "string"},
+                              "applicationUrl": {"type": "string"},
+                              "applicationSteps": {"type": "array", "items": {"type": "string"}},
+                              "preparationChecklist": {"type": "array", "items": {"type": "string"}},
+                              "requiredChecks": {"type": "array", "items": {"type": "string"}},
+                              "reconsiderWhen": {"type": "string"},
+                              "caution": {"type": "string"},
+                              "verifiedAt": {"type": "string"},
+                              "sourceUrl": {"type": "string"}
+                            },
+                            "additionalProperties": true
                           }
                         },
                         "additionalProperties": true
                       }
                     },
-                    "presentationPlan": {
-                      "type": "object",
-                      "properties": {
-                        "version": {"type": "string"},
-                        "introOrder": {"type": "array", "items": {"type": "string"}},
-                        "sections": {
-                          "type": "object",
-                          "properties": {
-                            "priority": {"type": "array", "items": {"type": "integer"}},
-                            "conditional": {"type": "array", "items": {"type": "integer"}},
-                            "reference": {"type": "array", "items": {"type": "integer"}}
-                          },
-                          "additionalProperties": true
-                        }
-                      },
-                      "additionalProperties": true
-                    },
-                    "masterIntroOrder": {"type": "array", "items": {"type": "string"}},
                     "assessmentCounts": {
                       "type": "object",
                       "properties": {
@@ -151,6 +155,93 @@
                         },
                         "additionalProperties": true
                       }
+                    },
+                    "diagnosisMasterLock": {
+                      "type": "object",
+                      "properties": {
+                        "locked": {"type": "boolean"},
+                        "mustUseAllServices": {"type": "boolean"},
+                        "mustPreserveDisplayRank": {"type": "boolean"},
+                        "mustNotAddServices": {"type": "boolean"},
+                        "serviceCount": {"type": "integer"},
+                        "allowedServiceNames": {"type": "array", "items": {"type": "string"}},
+                        "rules": {"type": "array", "items": {"type": "string"}}
+                      },
+                      "additionalProperties": true
+                    },
+                    "finalDisplayItems": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "displayRank": {"type": "integer"},
+                          "name": {"type": "string"},
+                          "eligibilityStatus": {"type": "string"},
+                          "reason": {"type": "string"},
+                          "executionGuide": {
+                            "type": "object",
+                            "properties": {
+                              "actionStatus": {"type": "string"},
+                              "nextAction": {"type": "string"},
+                              "applicationChannel": {"type": "string"},
+                              "applicationUrl": {"type": "string"},
+                              "applicationSteps": {"type": "array", "items": {"type": "string"}},
+                              "preparationChecklist": {"type": "array", "items": {"type": "string"}},
+                              "requiredChecks": {"type": "array", "items": {"type": "string"}},
+                              "reconsiderWhen": {"type": "string"},
+                              "caution": {"type": "string"}
+                            },
+                            "additionalProperties": true
+                          }
+                        },
+                        "additionalProperties": true
+                      }
+                    },
+                    "executionPlan": {
+                      "type": "object",
+                      "properties": {
+                        "immediate": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "displayRank": {"type": "integer"},
+                              "name": {"type": "string"},
+                              "nextAction": {"type": "string"},
+                              "applicationChannel": {"type": "string"},
+                              "applicationUrl": {"type": "string"}
+                            },
+                            "additionalProperties": true
+                          }
+                        },
+                        "conditional": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "displayRank": {"type": "integer"},
+                              "name": {"type": "string"},
+                              "nextAction": {"type": "string"},
+                              "requiredChecks": {"type": "array", "items": {"type": "string"}}
+                            },
+                            "additionalProperties": true
+                          }
+                        },
+                        "hold": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "displayRank": {"type": "integer"},
+                              "name": {"type": "string"},
+                              "reconsiderWhen": {"type": "string"}
+                            },
+                            "additionalProperties": true
+                          }
+                        },
+                        "rule": {"type": "string"}
+                      },
+                      "additionalProperties": true
                     },
                     "outputDirective": {"type": "string"}
                   },
