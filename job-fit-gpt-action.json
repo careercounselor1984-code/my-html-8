@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "GoodJob Job Fit Strategy API",
-    "version": "1.1.0",
-    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It searches current recruitment data with role-relevance filtering and creates role-market snapshots. The website's job-fit verdict remains the primary assessment; this API is for supplementary job discovery and market context only."
+    "version": "1.2.0",
+    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It separates direct role relevance from region-role placement confirmation so integrated postings are not overstated."
   },
   "servers": [
     {
@@ -24,12 +24,11 @@
                 "properties": {
                   "action": {
                     "type": "string",
-                    "enum": ["status", "search_jobs", "role_snapshot"],
-                    "description": "status checks available modules, search_jobs searches current recruitment data, and role_snapshot summarizes the market for a role or keyword."
+                    "enum": ["status", "search_jobs", "role_snapshot"]
                   },
                   "keyword": {
                     "type": "string",
-                    "description": "Job title, occupation, company, certification, or recruitment keyword. Multiple related role terms can be separated by spaces, commas, vertical bars, or slashes."
+                    "description": "Job or recruitment keyword. Related role terms may be separated by spaces, commas, vertical bars, or slashes."
                   },
                   "region": {
                     "type": "string",
@@ -37,19 +36,17 @@
                   },
                   "source": {
                     "type": "string",
-                    "enum": ["all", "alio", "cleaneye", "corporate"],
-                    "description": "Recruitment data source"
+                    "enum": ["all", "alio", "cleaneye", "corporate"]
                   },
                   "matchMode": {
                     "type": "string",
                     "enum": ["broad", "role"],
-                    "description": "Use role for occupation-focused searches so a keyword appearing only in qualifications or preferences is excluded. Use broad for company-name or general keyword searches."
+                    "description": "Use role for occupation-focused searches. It excludes qualification/preference-only keyword noise while allowing structured role evidence such as <기술/전기>."
                   },
                   "limit": {
                     "type": "integer",
                     "minimum": 1,
-                    "maximum": 30,
-                    "description": "Maximum number of results to return"
+                    "maximum": 30
                   }
                 },
                 "required": ["action"],
@@ -70,24 +67,15 @@
                     "version": {"type": "string"},
                     "total": {"type": "integer"},
                     "sampleCount": {"type": "integer"},
-                    "jobs": {
-                      "type": "array",
-                      "items": {"type": "object", "additionalProperties": true}
-                    },
-                    "topTitles": {
-                      "type": "array",
-                      "items": {"type": "object", "additionalProperties": true}
-                    },
+                    "jobs": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+                    "topTitles": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
                     "sourceCounts": {"type": "object", "additionalProperties": true},
                     "quality": {
                       "type": "object",
-                      "description": "Counts for high-confidence direct matches, related results needing review, and ALIO multi-role/multi-region pairings that need official-posting verification.",
+                      "description": "Includes directRoleMatches, relatedRoleMatches, regionRolePairingNeedsCheck, and confirmedRegionRoleMatches. Direct role relevance and region-role confirmation must be interpreted separately.",
                       "additionalProperties": true
                     },
-                    "cautions": {
-                      "type": "array",
-                      "items": {"type": "string"}
-                    },
+                    "cautions": {"type": "array", "items": {"type": "string"}},
                     "modules": {"type": "object", "additionalProperties": true},
                     "query": {"type": "object", "additionalProperties": true}
                   },
