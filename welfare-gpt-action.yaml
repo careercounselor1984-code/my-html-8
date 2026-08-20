@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Welfare Policy Search and Eligibility API
-  version: 2.0.1
+  version: 2.0.2
   description: Search Korean welfare policies and perform conservative second-stage eligibility screening using only user-provided facts.
 servers:
   - url: https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-router
@@ -91,6 +91,10 @@ paths:
                 householdMonthlyIncome:
                   type: integer
                   minimum: 0
+                householdAssetsTotal:
+                  type: integer
+                  minimum: 0
+                  description: Approximate total assets of the household used for screening, including housing, deposits, savings and vehicles, in KRW.
                 priorityWelfareStatus:
                   type: array
                   items:
