@@ -1,21 +1,21 @@
 {
   "openapi": "3.1.1",
   "info": {
-    "title": "Welfare Policy Search API",
-    "version": "1.2.5",
-    "description": "Search Korean central, local, and Ontong Youth policies using user-provided demographic, regional, employment, household and child information."
+    "title": "Welfare Policy Search and Eligibility API",
+    "version": "2.0.0",
+    "description": "Search Korean welfare policies and perform conservative second-stage eligibility screening using only user-provided facts."
   },
   "servers": [
     {
-      "url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-proxy"
+      "url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-router"
     }
   ],
   "paths": {
     "/": {
       "post": {
-        "operationId": "searchWelfarePolicies",
-        "summary": "Search personalized welfare and youth policies",
-        "description": "Search and rank central, local and Ontong Youth policies. Use only conditions the user explicitly provided. Special-target programs are filtered unless the user states a matching condition. Results are counseling candidates, not final eligibility decisions.",
+        "operationId": "searchOrDiagnoseWelfarePolicies",
+        "summary": "Search policies or run second-stage eligibility screening",
+        "description": "Use action=search for the first policy search. For broad requests use interest=전체. Use action=diagnose after the first search or when the user provides follow-up income, housing, asset, household, welfare-status, crisis, medical or credit information. Never infer missing personal facts. Diagnosis is a conservative screening result, not a final legal eligibility decision.",
         "requestBody": {
           "required": true,
           "content": {
@@ -23,19 +23,35 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "action": {"type": "string", "enum": ["search"]},
-                  "age": {"type": "integer", "minimum": 0, "maximum": 120, "description": "User age in full years. Example: 29"},
-                  "gender": {"type": "string", "enum": ["선택 안함", "여성", "남성"], "description": "Optional gender. Use only when explicitly provided."},
-                  "sido": {"type": "string", "description": "Province or metropolitan city. Example: 울산광역시"},
-                  "sigungu": {"type": "string", "description": "City, county or district. Example: 북구. Avoid programs limited to another locality."},
-                  "employmentStatus": {"type": "string", "description": "Employment status such as 미취업, 재직중, 단시간근로, 프리랜서, 일용근로, 자영업, 예비창업"},
-                  "maritalStatus": {"type": "string", "enum": ["선택 안함", "미혼", "기혼", "기타"], "description": "Optional marital status. Do not infer it."},
-                  "householdType": {"type": "string", "enum": ["선택 안함", "1인가구", "부부", "부부+자녀", "한부모", "조손가구", "기타"], "description": "Optional household type for policy matching."},
-                  "hasChildren": {"type": "string", "enum": ["선택 안함", "없음", "있음"], "description": "Optional child-presence status. Do not infer it."},
-                  "childrenAges": {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 30}, "maxItems": 8, "description": "Optional full ages of children. Example: [2, 6]."},
-                  "annualIncome": {"type": "integer", "minimum": 0, "description": "Optional annual income in 10,000 KRW units. Not a final eligibility test."},
-                  "interest": {"type": "string", "description": "Interest area: 취업·훈련, 주거, 금융, 생계, 의료, 심리·마음건강, 돌봄, 교육·문화, 청년정책"},
-                  "keyword": {"type": "string", "description": "Optional keyword from the user's own words. If the user explicitly states a special status such as 산재, 보훈, 장애, 병역의무, 북한이탈, 다문화, 입양, 가정위탁 or 자립준비, include that concept here. Never invent special-target status."}
+                  "action": {"type": "string", "enum": ["search", "diagnose"], "description": "search = first-stage policy search, diagnose = second-stage eligibility screening"},
+                  "age": {"type": "integer", "minimum": 0, "maximum": 120},
+                  "gender": {"type": "string", "enum": ["선택 안함", "여성", "남성"]},
+                  "sido": {"type": "string", "description": "Example: 울산광역시"},
+                  "sigungu": {"type": "string", "description": "Example: 북구"},
+                  "employmentStatus": {"type": "string", "description": "Example: 미취업, 재직중, 단시간근로, 프리랜서, 일용근로, 자영업"},
+                  "maritalStatus": {"type": "string", "enum": ["선택 안함", "미혼", "기혼", "기타"]},
+                  "householdType": {"type": "string", "enum": ["선택 안함", "1인가구", "부부", "부부+자녀", "한부모", "조손가구", "기타"]},
+                  "hasChildren": {"type": "string", "enum": ["선택 안함", "없음", "있음"]},
+                  "childrenAges": {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 30}, "maxItems": 8},
+                  "interest": {"type": "string", "enum": ["전체", "취업·훈련", "주거", "금융", "생계", "의료", "심리·마음건강", "돌봄", "교육·문화", "청년정책"]},
+                  "keyword": {"type": "string", "description": "Use only concepts explicitly stated by the user. Never invent special-target status."},
+                  "annualIncome": {"type": "integer", "minimum": 0, "description": "Annual personal income in 10,000 KRW units when explicitly provided."},
+                  "monthlyIncome": {"type": "integer", "minimum": 0, "description": "Current personal monthly income in KRW. Use 0 only when the user explicitly says no income."},
+                  "livingWithParents": {"type": "boolean", "description": "true only when the user explicitly says they live with parents."},
+                  "noHome": {"type": "boolean", "description": "true means the user explicitly states they do NOT own a home; false means they own a home."},
+                  "housingType": {"type": "string", "enum": ["부모님 집", "월세", "전세", "자가", "무상거주", "기타"]},
+                  "rentDeposit": {"type": "integer", "minimum": 0, "description": "Rental deposit in KRW."},
+                  "monthlyRent": {"type": "integer", "minimum": 0, "description": "Monthly rent in KRW."},
+                  "savings": {"type": "integer", "minimum": 0, "description": "Approximate savings and financial assets in KRW."},
+                  "vehicleValue": {"type": "integer", "minimum": 0, "description": "Approximate vehicle value in KRW."},
+                  "assetsTotal": {"type": "integer", "minimum": 0, "description": "Approximate total assets in KRW when known."},
+                  "householdSize": {"type": "integer", "minimum": 1, "maximum": 20},
+                  "householdMonthlyIncome": {"type": "integer", "minimum": 0, "description": "Approximate monthly income of the household used for screening, in KRW."},
+                  "priorityWelfareStatus": {"type": "array", "items": {"type": "string"}, "description": "Explicit statuses only, e.g. 기초생활수급, 차상위, 한부모, 근로장려금 자격, or 해당 없음."},
+                  "crisisReason": {"type": "string", "description": "Explicit emergency reason such as recent job loss, closure, serious illness, or '없음'."},
+                  "medicalExpenseNeed": {"type": "boolean", "description": "true only if the user states that a serious medical-expense burden actually exists."},
+                  "creditNeed": {"type": "boolean", "description": "Whether the user wants policy-loan options considered."},
+                  "creditStatus": {"type": "string", "description": "Only explicit information such as 저신용, 신용평점 하위권, 근로장려금 자격, or 모름."}
                 },
                 "required": ["action"],
                 "additionalProperties": false
@@ -45,36 +61,24 @@
         },
         "responses": {
           "200": {
-            "description": "Successful response",
+            "description": "Successful policy search or eligibility screening response",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
                     "ok": {"type": "boolean"},
-                    "profile": {"type": "object", "additionalProperties": true},
-                    "queries": {"type": "array", "items": {"type": "string"}},
-                    "sources": {"type": "object", "additionalProperties": {"type": "boolean"}},
-                    "total": {"type": "integer"},
-                    "services": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "source": {"type": "string", "description": "중앙부처, 지자체, or 온통청년"},
-                          "name": {"type": "string"},
-                          "agency": {"type": "string"},
-                          "summary": {"type": "string"},
-                          "target": {"type": "string"},
-                          "category": {"type": "string"},
-                          "link": {"type": "string"},
-                          "matchScore": {"type": "integer"},
-                          "matchReasons": {"type": "array", "items": {"type": "string"}},
-                          "matchWarnings": {"type": "array", "items": {"type": "string"}}
-                        }
-                      }
-                    }
-                  }
+                    "mode": {"type": "string"},
+                    "responseMode": {"type": "string"},
+                    "masterResult": {"type": "boolean"},
+                    "services": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+                    "presentationPlan": {"type": "object", "additionalProperties": true},
+                    "assessmentCounts": {"type": "object", "additionalProperties": true},
+                    "nextQuestionRound": {"type": "integer"},
+                    "nextQuestions": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
+                    "outputDirective": {"type": "string"}
+                  },
+                  "additionalProperties": true
                 }
               }
             }
