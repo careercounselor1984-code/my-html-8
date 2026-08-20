@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Welfare Policy Search and Eligibility API
-  version: 2.0.0
+  version: 2.0.1
   description: Search Korean welfare policies and perform conservative second-stage eligibility screening using only user-provided facts.
 servers:
   - url: https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-router
@@ -31,10 +31,8 @@ paths:
                   enum: [선택 안함, 여성, 남성]
                 sido:
                   type: string
-                  description: 'Example: 울산광역시'
                 sigungu:
                   type: string
-                  description: 'Example: 북구'
                 employmentStatus:
                   type: string
                 maritalStatus:
@@ -58,20 +56,16 @@ paths:
                   enum: [전체, 취업·훈련, 주거, 금융, 생계, 의료, 심리·마음건강, 돌봄, 교육·문화, 청년정책]
                 keyword:
                   type: string
-                  description: Use only concepts explicitly stated by the user.
                 annualIncome:
                   type: integer
                   minimum: 0
-                  description: Annual personal income in 10,000 KRW units.
                 monthlyIncome:
                   type: integer
                   minimum: 0
-                  description: Current personal monthly income in KRW.
                 livingWithParents:
                   type: boolean
                 noHome:
                   type: boolean
-                  description: true means the user explicitly states they do not own a home.
                 housingType:
                   type: string
                   enum: [부모님 집, 월세, 전세, 자가, 무상거주, 기타]
@@ -101,10 +95,8 @@ paths:
                   type: array
                   items:
                     type: string
-                  description: Explicit statuses only, such as 기초생활수급, 차상위, 한부모, 근로장려금 자격, or 해당 없음.
                 crisisReason:
                   type: string
-                  description: Explicit emergency reason or 없음.
                 medicalExpenseNeed:
                   type: boolean
                 creditNeed:
@@ -119,8 +111,163 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  ok:
+                    type: boolean
+                  mode:
+                    type: string
+                  responseMode:
+                    type: string
+                  masterResult:
+                    type: boolean
+                  interest:
+                    type: string
+                  total:
+                    type: integer
+                  finalAuditVersion:
+                    type: string
+                  diagnosisVersion:
+                    type: string
+                  services:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        name:
+                          type: string
+                        source:
+                          type: string
+                        agency:
+                          type: string
+                        summary:
+                          type: string
+                        support:
+                          type: string
+                        target:
+                          type: string
+                        qualificationDetails:
+                          type: string
+                        applicationMethod:
+                          type: string
+                        contact:
+                          type: string
+                        category:
+                          type: string
+                        region:
+                          type: string
+                        applicationPeriod:
+                          type: string
+                        displayRank:
+                          type: integer
+                        recommendationTier:
+                          type: string
+                        recommendationReason:
+                          type: string
+                        officialUrl:
+                          type: string
+                        officialUrlLine:
+                          type: string
+                        mustPrintOfficialUrl:
+                          type: boolean
+                        eligibilityAssessment:
+                          type: object
+                          properties:
+                            eligibilityStatus:
+                              type: string
+                            reason:
+                              type: string
+                            missingFields:
+                              type: array
+                              items:
+                                type: string
+                            practicalPriority:
+                              type: string
+                            caution:
+                              type: string
+                          additionalProperties: true
+                      additionalProperties: true
+                  presentationPlan:
+                    type: object
+                    properties:
+                      version:
+                        type: string
+                      introOrder:
+                        type: array
+                        items:
+                          type: string
+                      sections:
+                        type: object
+                        properties:
+                          priority:
+                            type: array
+                            items:
+                              type: integer
+                          conditional:
+                            type: array
+                            items:
+                              type: integer
+                          reference:
+                            type: array
+                            items:
+                              type: integer
+                        additionalProperties: true
+                    additionalProperties: true
+                  masterIntroOrder:
+                    type: array
+                    items:
+                      type: string
+                  assessmentCounts:
+                    type: object
+                    properties:
+                      신청 가능성 높음:
+                        type: integer
+                      조건 확인 필요:
+                        type: integer
+                      현재 불가 가능성 높음:
+                        type: integer
+                    additionalProperties: true
+                  nextQuestionRound:
+                    type: integer
+                  nextQuestions:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: string
+                        text:
+                          type: string
+                        fields:
+                          type: array
+                          items:
+                            type: string
+                      additionalProperties: true
+                  outputDirective:
+                    type: string
                 additionalProperties: true
         '400':
           description: Bad request
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  error:
+                    type: string
+                additionalProperties: true
         '500':
           description: Server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  error:
+                    type: string
+                additionalProperties: true
