@@ -1,0 +1,91 @@
+{
+  "openapi": "3.1.1",
+  "info": {
+    "title": "GoodJob Job Fit Strategy API",
+    "version": "1.0.0",
+    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It searches current recruitment data and creates role-market snapshots. The website's job-fit verdict remains the primary assessment; this API is for supplementary job discovery and market context only."
+  },
+  "servers": [
+    {
+      "url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/career-hub"
+    }
+  ],
+  "paths": {
+    "/": {
+      "post": {
+        "operationId": "useJobFitCareerHub",
+        "summary": "Search recruitment data or create a role-market snapshot",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "action": {
+                    "type": "string",
+                    "enum": ["status", "search_jobs", "role_snapshot"],
+                    "description": "status checks available modules, search_jobs searches current recruitment data, and role_snapshot summarizes the market for a role or keyword."
+                  },
+                  "keyword": {
+                    "type": "string",
+                    "description": "Job title, occupation, company, certification, or recruitment keyword such as 생산, 전기, 품질, 회계, 근로복지공단"
+                  },
+                  "region": {
+                    "type": "string",
+                    "description": "Preferred recruitment region such as 울산, 부산, 경남, 전국"
+                  },
+                  "source": {
+                    "type": "string",
+                    "enum": ["all", "alio", "cleaneye", "corporate"],
+                    "description": "Recruitment data source"
+                  },
+                  "limit": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 30,
+                    "description": "Maximum number of results to return"
+                  }
+                },
+                "required": ["action"],
+                "additionalProperties": false
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {"type": "boolean"},
+                    "version": {"type": "string"},
+                    "total": {"type": "integer"},
+                    "returned": {"type": "integer"},
+                    "jobs": {
+                      "type": "array",
+                      "items": {"type": "object", "additionalProperties": true}
+                    },
+                    "topTitles": {
+                      "type": "array",
+                      "items": {"type": "object", "additionalProperties": true}
+                    },
+                    "sourceCounts": {"type": "object", "additionalProperties": true},
+                    "modules": {"type": "object", "additionalProperties": true},
+                    "query": {"type": "object", "additionalProperties": true}
+                  },
+                  "additionalProperties": true
+                }
+              }
+            }
+          },
+          "400": {"description": "Bad request"},
+          "500": {"description": "Server error"}
+        }
+      }
+    }
+  }
+}
