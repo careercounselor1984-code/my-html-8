@@ -1,7 +1,7 @@
 openapi: 3.1.0
 info:
   title: Welfare Policy Search and Eligibility API
-  version: 2.2.0
+  version: 2.2.1
   description: >
     Search Korean welfare policies and run conservative eligibility screening with
     2026 detail checks and practical application guidance. Use only user-provided
@@ -14,18 +14,9 @@ paths:
       operationId: searchOrDiagnoseWelfarePolicies
       summary: Search policies or run final eligibility diagnosis
       description: >
-        Use action=search only when the user has provided a basic profile and needs
-        first-stage policy discovery. For broad requests use interest=전체.
-        If the user already provided income, housing, assets, household, crisis,
-        medical or credit facts, prefer action=diagnose directly.
-        IMPORTANT: when the response has mode=SECOND_STAGE_ELIGIBILITY or
-        compactResponse=true, finalDisplayItems is the sole authoritative policy
-        list for the answer. Preserve every displayRank, name and eligibilityStatus
-        exactly. Follow sectionLock. Do not add, remove, replace, rerank or move
-        policies using earlier search results, conversation context, general
-        knowledge or web browsing. Do not perform a second policy-discovery search.
-        Web verification, if absolutely needed, may only verify details of a policy
-        already present in finalDisplayItems and must never change the list.
+        Use search for first-stage discovery and diagnose for eligibility screening.
+        If compactResponse=true, use finalDisplayItems and sectionLock exactly.
+        Do not add, replace, rerank or move policies using prior results or web browsing.
       requestBody:
         required: true
         content:
