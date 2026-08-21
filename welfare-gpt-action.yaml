@@ -1,22 +1,16 @@
 openapi: 3.1.0
 info:
   title: Welfare Policy Search and Eligibility API
-  version: 2.2.1
-  description: >
-    Search Korean welfare policies and run conservative eligibility screening with
-    2026 detail checks and practical application guidance. Use only user-provided
-    personal facts. Diagnosis responses can be compact and authoritative.
+  version: 2.3.0
+  description: Separate first-stage welfare discovery from detailed eligibility diagnosis using only user-provided facts.
 servers:
   - url: https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-router
 paths:
-  /:
+  /search:
     post:
-      operationId: searchOrDiagnoseWelfarePolicies
-      summary: Search policies or run final eligibility diagnosis
-      description: >
-        Use search for first-stage discovery and diagnose for eligibility screening.
-        If compactResponse=true, use finalDisplayItems and sectionLock exactly.
-        Do not add, replace, rerank or move policies using prior results or web browsing.
+      operationId: searchWelfarePolicies
+      summary: First-stage welfare policy search only
+      description: Use only before detailed income, housing, asset, welfare, crisis, medical or credit facts are known. If those facts are already provided, use diagnoseWelfareEligibility instead.
       requestBody:
         required: true
         content:
@@ -25,9 +19,6 @@ paths:
               type: object
               additionalProperties: false
               properties:
-                action:
-                  type: string
-                  enum: [search, diagnose]
                 age:
                   type: integer
                   minimum: 0
@@ -54,9 +45,98 @@ paths:
                   type: array
                   items:
                     type: integer
-                    minimum: 0
-                    maximum: 30
-                  maxItems: 8
+                interest:
+                  type: string
+                  enum: [전체, 취업·훈련, 주거, 금융, 생계, 의료, 심리·마음건강, 돌봄, 교육·문화, 청년정책]
+                keyword:
+                  type: string
+      responses:
+        '200':
+          description: First-stage MASTER policy search result
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  ok:
+                    type: boolean
+                  mode:
+                    type: string
+                  masterResult:
+                    type: boolean
+                  interest:
+                    type: string
+                  total:
+                    type: integer
+                  presentationPlan:
+                    type: object
+                    additionalProperties: true
+                  services:
+                    type: array
+                    description: The sole first-stage MASTER list for this search response.
+                    items:
+                      type: object
+                      properties:
+                        name:
+                          type: string
+                        displayRank:
+                          type: integer
+                        recommendationTier:
+                          type: string
+                        recommendationReason:
+                          type: string
+                        officialUrlLine:
+                          type: string
+                        verifiedBenefitText:
+                          type: string
+                      additionalProperties: true
+                  outputDirective:
+                    type: string
+                additionalProperties: true
+        '400':
+          description: Bad request
+        '500':
+          description: Server error
+
+  /diagnose:
+    post:
+      operationId: diagnoseWelfareEligibility
+      summary: Final welfare eligibility diagnosis from detailed profile
+      description: Use whenever income, parent co-residence, housing, assets, household income/assets, welfare status, crisis, medical expense or credit facts are provided. Do not call search first. This response is authoritative.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              additionalProperties: false
+              properties:
+                age:
+                  type: integer
+                  minimum: 0
+                  maximum: 120
+                gender:
+                  type: string
+                  enum: [선택 안함, 여성, 남성]
+                sido:
+                  type: string
+                sigungu:
+                  type: string
+                employmentStatus:
+                  type: string
+                maritalStatus:
+                  type: string
+                  enum: [선택 안함, 미혼, 기혼, 기타]
+                householdType:
+                  type: string
+                  enum: [선택 안함, 1인가구, 부부, 부부+자녀, 한부모, 조손가구, 기타]
+                hasChildren:
+                  type: string
+                  enum: [선택 안함, 없음, 있음]
+                childrenAges:
+                  type: array
+                  items:
+                    type: integer
                 interest:
                   type: string
                   enum: [전체, 취업·훈련, 주거, 금융, 생계, 의료, 심리·마음건강, 돌봄, 교육·문화, 청년정책]
@@ -72,7 +152,7 @@ paths:
                   type: boolean
                 noHome:
                   type: boolean
-                  description: true means the user explicitly says they do not own a home.
+                  description: true only when the user explicitly says they do not own a home.
                 housingType:
                   type: string
                   enum: [부모님 집, 월세, 전세, 자가, 무상거주, 기타]
@@ -101,23 +181,24 @@ paths:
                 householdAssetsTotal:
                   type: integer
                   minimum: 0
-                  description: Approximate total household assets in KRW including housing, deposits, savings and vehicles.
                 priorityWelfareStatus:
                   type: array
+                  description: Explicit welfare qualifications or explicit none.
                   items:
                     type: string
                 crisisReason:
                   type: string
+                  description: Explicit crisis reason or explicit none.
                 medicalExpenseNeed:
                   type: boolean
                 creditNeed:
                   type: boolean
                 creditStatus:
                   type: string
-              required: [action]
+                  description: Use 모름 when the user explicitly says the credit condition is unknown.
       responses:
         '200':
-          description: Successful policy search or authoritative eligibility diagnosis
+          description: Authoritative compact eligibility diagnosis
           content:
             application/json:
               schema:
@@ -127,114 +208,13 @@ paths:
                     type: boolean
                   mode:
                     type: string
-                  responseMode:
-                    type: string
                   compactResponse:
                     type: boolean
-                    description: When true, use finalDisplayItems as the only policy list.
                   compactResponseVersion:
                     type: string
-                  masterResult:
-                    type: boolean
-                  interest:
-                    type: string
-                  total:
-                    type: integer
-                  finalAuditVersion:
-                    type: string
-                  diagnosisVersion:
-                    type: string
-                  detailCriteriaVersion:
-                    type: string
-                  executionGuideVersion:
-                    type: string
-                  routerDecision:
+                  profileEcho:
                     type: object
-                    properties:
-                      originalAction:
-                        type: string
-                      effectiveAction:
-                        type: string
-                      autoPromoted:
-                        type: boolean
-                      reason:
-                        type: string
                     additionalProperties: true
-                  services:
-                    type: array
-                    description: First-stage search results. Ignore this field if compactResponse=true.
-                    items:
-                      type: object
-                      properties:
-                        id:
-                          type: string
-                        name:
-                          type: string
-                        source:
-                          type: string
-                        agency:
-                          type: string
-                        summary:
-                          type: string
-                        support:
-                          type: string
-                        target:
-                          type: string
-                        qualificationDetails:
-                          type: string
-                        applicationMethod:
-                          type: string
-                        contact:
-                          type: string
-                        category:
-                          type: string
-                        region:
-                          type: string
-                        applicationPeriod:
-                          type: string
-                        displayRank:
-                          type: integer
-                        recommendationTier:
-                          type: string
-                        recommendationReason:
-                          type: string
-                        officialUrl:
-                          type: string
-                        officialUrlLine:
-                          type: string
-                        mustPrintOfficialUrl:
-                          type: boolean
-                      additionalProperties: true
-                  presentationPlan:
-                    type: object
-                    properties:
-                      version:
-                        type: string
-                      introOrder:
-                        type: array
-                        items:
-                          type: string
-                      sections:
-                        type: object
-                        properties:
-                          priority:
-                            type: array
-                            items:
-                              type: integer
-                          conditional:
-                            type: array
-                            items:
-                              type: integer
-                          reference:
-                            type: array
-                            items:
-                              type: integer
-                        additionalProperties: true
-                    additionalProperties: true
-                  masterIntroOrder:
-                    type: array
-                    items:
-                      type: string
                   assessmentCounts:
                     type: object
                     properties:
@@ -247,7 +227,7 @@ paths:
                     additionalProperties: true
                   sectionLock:
                     type: object
-                    description: Authoritative final section membership for diagnosis.
+                    description: Authoritative final section membership. Never move an item to another section.
                     properties:
                       highRanks:
                         type: array
@@ -261,42 +241,27 @@ paths:
                         type: array
                         items:
                           type: integer
+                      highNames:
+                        type: array
+                        items:
+                          type: string
+                      conditionalNames:
+                        type: array
+                        items:
+                          type: string
+                      lowNames:
+                        type: array
+                        items:
+                          type: string
                       rule:
                         type: string
                     additionalProperties: true
                   diagnosisMasterLock:
                     type: object
-                    description: Hard lock for the final diagnosis policy list.
-                    properties:
-                      locked:
-                        type: boolean
-                      mustUseAllServices:
-                        type: boolean
-                      mustPreserveDisplayRank:
-                        type: boolean
-                      mustNotAddServices:
-                        type: boolean
-                      mustIgnoreEarlierPolicyCandidates:
-                        type: boolean
-                      mustPreserveSectionMembership:
-                        type: boolean
-                      serviceCount:
-                        type: integer
-                      allowedServiceNames:
-                        type: array
-                        items:
-                          type: string
-                      rules:
-                        type: array
-                        items:
-                          type: string
                     additionalProperties: true
                   finalDisplayItems:
                     type: array
-                    description: >
-                      Sole authoritative policy list when mode=SECOND_STAGE_ELIGIBILITY
-                      or compactResponse=true. Use every item exactly once. Never add
-                      another policy and never change displayRank or eligibilityStatus.
+                    description: Sole authoritative final diagnosis list. Output every item exactly once and keep lockedSection, eligibilityStatus, displayRank and name unchanged.
                     items:
                       type: object
                       properties:
@@ -307,6 +272,10 @@ paths:
                         eligibilityStatus:
                           type: string
                           enum: [신청 가능성 높음, 조건 확인 필요, 현재 불가 가능성 높음]
+                        lockedSection:
+                          type: string
+                          enum: [신청 가능성 높음, 조건 확인 필요, 현재 불가 가능성 높음]
+                          description: Output this item only in this section. Never reinterpret it.
                         reason:
                           type: string
                         practicalPriority:
@@ -319,75 +288,9 @@ paths:
                           type: string
                         detailScreening:
                           type: object
-                          properties:
-                            detailStatus:
-                              type: string
-                            officialCriteriaYear:
-                              type: integer
-                            householdSize:
-                              type: integer
-                            incomeThreshold:
-                              type: number
-                            inputHouseholdMonthlyIncome:
-                              type: number
-                            simpleIncomeComparison:
-                              type: string
-                            estimatedBenefitUpperBound:
-                              type: number
-                            benefitFormula:
-                              type: string
-                            incomeLimit75Percent:
-                              type: number
-                            incomeCheck:
-                              type: string
-                            ulsanPropertyReferenceLimit:
-                              type: number
-                            ulsanHousingAssetDeductionLimit:
-                              type: number
-                            financialAssetLimit:
-                              type: number
-                            crisisCheck:
-                              type: string
-                            reason:
-                              type: string
-                            officialRule:
-                              type: string
-                            missingFields:
-                              type: array
-                              items:
-                                type: string
-                            caution:
-                              type: string
-                            sourceLabel:
-                              type: string
                           additionalProperties: true
                         executionGuide:
                           type: object
-                          properties:
-                            actionStatus:
-                              type: string
-                            nextAction:
-                              type: string
-                            applicationChannel:
-                              type: string
-                            applicationUrl:
-                              type: string
-                            applicationSteps:
-                              type: array
-                              items:
-                                type: string
-                            preparationChecklist:
-                              type: array
-                              items:
-                                type: string
-                            requiredChecks:
-                              type: array
-                              items:
-                                type: string
-                            reconsiderWhen:
-                              type: string
-                            caution:
-                              type: string
                           additionalProperties: true
                       additionalProperties: true
                   nextQuestionRound:
@@ -396,57 +299,29 @@ paths:
                     type: array
                     items:
                       type: object
-                      properties:
-                        id:
-                          type: string
-                        text:
-                          type: string
-                        fields:
-                          type: array
-                          items:
-                            type: string
                       additionalProperties: true
                   verifiedPolicyFacts:
                     type: object
-                    properties:
-                      nationalEmploymentSupport2026:
-                        type: object
-                        properties:
-                          type1JobSeekingAllowance:
-                            type: string
-                          dependentAllowance:
-                            type: string
-                          verifiedAt:
-                            type: string
-                          sourceUrl:
-                            type: string
-                        additionalProperties: true
                     additionalProperties: true
                   outputDirective:
                     type: string
                     description: Mandatory rendering instructions for the final answer.
+                  routerDecision:
+                    type: object
+                    properties:
+                      originalAction:
+                        type: string
+                      effectiveAction:
+                        type: string
+                      autoPromoted:
+                        type: boolean
+                      signalCount:
+                        type: integer
+                      routeSource:
+                        type: string
+                    additionalProperties: true
                 additionalProperties: true
         '400':
           description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  ok:
-                    type: boolean
-                  error:
-                    type: string
-                additionalProperties: true
         '500':
           description: Server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  ok:
-                    type: boolean
-                  error:
-                    type: string
-                additionalProperties: true
