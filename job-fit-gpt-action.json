@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "GoodJob Job Fit Strategy API",
-    "version": "1.2.0",
-    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It separates direct role relevance from region-role placement confirmation so integrated postings are not overstated."
+    "version": "1.3.0",
+    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It separates direct role relevance from region-role placement confirmation and filters academic-field false positives such as professor postings whose specialty merely contains the search keyword."
   },
   "servers": [
     {
@@ -22,32 +22,12 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "action": {
-                    "type": "string",
-                    "enum": ["status", "search_jobs", "role_snapshot"]
-                  },
-                  "keyword": {
-                    "type": "string",
-                    "description": "Job or recruitment keyword. Related role terms may be separated by spaces, commas, vertical bars, or slashes."
-                  },
-                  "region": {
-                    "type": "string",
-                    "description": "Preferred recruitment region such as 울산, 부산, 경남, 전국"
-                  },
-                  "source": {
-                    "type": "string",
-                    "enum": ["all", "alio", "cleaneye", "corporate"]
-                  },
-                  "matchMode": {
-                    "type": "string",
-                    "enum": ["broad", "role"],
-                    "description": "Use role for occupation-focused searches. It excludes qualification/preference-only keyword noise while allowing structured role evidence such as <기술/전기>."
-                  },
-                  "limit": {
-                    "type": "integer",
-                    "minimum": 1,
-                    "maximum": 30
-                  }
+                  "action": {"type": "string", "enum": ["status", "search_jobs", "role_snapshot"]},
+                  "keyword": {"type": "string", "description": "Job or recruitment keyword. Related role terms may be separated by spaces, commas, vertical bars, or slashes."},
+                  "region": {"type": "string", "description": "Preferred recruitment region such as 울산, 부산, 경남, 전국"},
+                  "source": {"type": "string", "enum": ["all", "alio", "cleaneye", "corporate"]},
+                  "matchMode": {"type": "string", "enum": ["broad", "role"], "description": "Use role for occupation-focused searches. Qualification/preference-only noise and academic specialty false positives are excluded, while explicit role evidence such as <기술/전기> remains valid."},
+                  "limit": {"type": "integer", "minimum": 1, "maximum": 30}
                 },
                 "required": ["action"],
                 "additionalProperties": false
@@ -70,11 +50,7 @@
                     "jobs": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
                     "topTitles": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
                     "sourceCounts": {"type": "object", "additionalProperties": true},
-                    "quality": {
-                      "type": "object",
-                      "description": "Includes directRoleMatches, relatedRoleMatches, regionRolePairingNeedsCheck, and confirmedRegionRoleMatches. Direct role relevance and region-role confirmation must be interpreted separately.",
-                      "additionalProperties": true
-                    },
+                    "quality": {"type": "object", "description": "Includes directRoleMatches, relatedRoleMatches, regionRolePairingNeedsCheck, and confirmedRegionRoleMatches.", "additionalProperties": true},
                     "cautions": {"type": "array", "items": {"type": "string"}},
                     "modules": {"type": "object", "additionalProperties": true},
                     "query": {"type": "object", "additionalProperties": true}
