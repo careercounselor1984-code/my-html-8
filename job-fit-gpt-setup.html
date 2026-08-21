@@ -8,21 +8,23 @@
 </style></head>
 <body><div class="wrap">
 <h1>좋은일자리 채용 지원전략 AI 설정 가이드</h1>
-<div class="sub">채용 지원가능성 분석센터 v1.8 연동용 Custom GPT 설정입니다. 채용 전용 API / GPT 지침 1.5.1 기준입니다.</div>
+<div class="sub">채용 지원가능성 분석센터 v1.8 연동용 Custom GPT 설정입니다. 채용 전용 API / GPT 지침 1.6.0 기준입니다.</div>
 
-<div class="card"><h2>v1.5.1 핵심</h2><div class="ok"><b>고용24 채용정보를 실시간 4번째 소스로 추가했습니다.</b><br>① ALIO · CLEANEYE · 기업DB · 고용24를 함께 검색<br>② 고용24 목록 결과를 상세 API로 다시 확인해 모집직종·직무내용·학력·경력·자격·근무예정지를 보강<br>③ 고용24 주 모집직종이 일치하면 직접 관련, 관련직종·직무내용만 일치하면 관련 가능으로 구분<br>④ '전기용접원'처럼 단어만 겹치는 오탐을 일반 전기직에서 제외<br>⑤ ALIO 통합공고의 직무-지역 재확인 규칙, 자동 재시도·부분 표본 처리, 교수초빙 오탐 방지는 그대로 유지<br>⑥ 시장요약은 표 없이 핵심 숫자와 주요공고를 먼저 표시</div></div>
+<div class="card"><h2>v1.6.0 핵심</h2><div class="ok"><b>기본 검색범위를 중견·대기업 이상 및 공공부문 중심으로 정리했습니다.</b><br>① 기본 scope=core: ALIO · CLEANEYE · 기업DB · 고용24 공채속보<br>② 고용24 공채속보는 대기업 · 공기업 · 공공기관 · 중견기업 · 외국계만 사용<br>③ 고용24 일반 중소기업 공고는 기본 결과에서 제외<br>④ 사용자가 '중소기업까지/전체/규모 상관없이'라고 요청할 때만 scope=expanded로 고용24 일반채용 추가<br>⑤ 공채속보는 목록상 근무지역·상세 지원자격이 부족하므로 지역배치와 자격은 공식 채용사이트 확인<br>⑥ 기존 사이트 판정 유지, 직무-지역 분리, 오탐 방지, 부분 표본 처리 규칙은 그대로 유지</div></div>
 
-<div class="card"><h2>기존 GPT에서 수정할 것</h2><div class="warn">이번에는 Action 스키마가 변경됐습니다. <b>지침 전체 교체 → Action 스키마 최신 버전 재가져오기/붙여넣기 → 인증 None 확인 → Preview 테스트 → 업데이트 저장</b> 순서로 진행하세요.</div>
+<div class="card"><h2>기존 GPT에서 수정할 것</h2><div class="warn">이번에는 <b>Action 스키마와 지침이 모두 변경</b>됐습니다. <b>지침 전체 교체 → Action 스키마 최신 버전 재가져오기/붙여넣기 → 인증 None 확인 → Preview 테스트 → 업데이트 저장</b> 순서로 진행하세요.</div>
 <a class="btn" href="https://chatgpt.com/gpts" target="_blank" rel="noopener">GPTs 열기</a><a class="btn secondary" href="job-fit-v18.html">분석센터 열기</a></div>
 
-<div class="card"><h2>전체 지침</h2><div class="code">고용24 실시간 채용검색과 상세 직무 판정 규칙을 포함한 지침 1.5.1입니다.</div><a class="btn" href="job-fit-gpt-instructions.txt" target="_blank">전체 지침 파일 열기</a></div>
+<div class="card"><h2>전체 지침</h2><div class="code">기본=중견·대기업 이상+공공부문, 확장=고용24 일반채용 추가 규칙을 포함한 지침 1.6.0입니다.</div><a class="btn" href="job-fit-gpt-instructions.txt" target="_blank">전체 지침 파일 열기</a></div>
 
 <div class="card"><h2>Action 설정</h2><h3>인증</h3><div class="code">없음 (None)</div><h3>스키마 URL</h3><div class="code" id="schema">https://careercounselor1984-code.github.io/my-html-8/job-fit-gpt-action.json</div><button class="btn secondary" data-copy="schema">스키마 URL 복사</button><a class="btn secondary" href="job-fit-gpt-action.json" target="_blank">스키마 열기</a><h3>개인정보처리방침</h3><div class="code" id="privacy">https://careercounselor1984-code.github.io/my-html-8/job-fit-gpt-privacy.html</div><button class="btn secondary" data-copy="privacy">개인정보 URL 복사</button></div>
 
-<div class="card"><h2>Preview 테스트</h2><div class="code" id="test">울산 전기 직무 채용시장 요약해줘</div><button class="btn secondary" data-copy="test">테스트 문구 복사</button><div class="sub" style="margin-top:10px">정상이라면 조회 성공 출처에 고용24가 포함되고, 실제 울산 민간 전기·전장·PLC 공고가 ALIO 공고와 함께 나와야 합니다. 고용24 공고는 근무지가 구체적으로 확인된 직접 관련 공고와 관련 가능 공고를 구분해야 하며, 공고 수는 고정값이 아니라 실행 시점의 실시간 표본으로 안내해야 합니다.</div></div>
+<div class="card"><h2>Preview 기본범위 테스트</h2><div class="code" id="test">울산 전기 직무 채용시장 요약해줘</div><button class="btn secondary" data-copy="test">테스트 문구 복사</button><div class="sub" style="margin-top:10px">정상이라면 답변에 <b>중견·대기업 이상 및 공공부문 중심 표본</b>이라고 표시되고, 기본 결과에는 일반 중소기업 고용24 공고가 섞이지 않아야 합니다. 고용24 공채속보는 중견·대기업 등 기업구분을 표시하고, 근무지역은 확인되지 않으면 '지역 공식 확인 필요'로 처리해야 합니다.</div></div>
 
-<div class="card"><h2>추가 테스트</h2><div class="code">1. 울산 전기 관련 현재 지원 가능한 공고 찾아줘
-2. 고용24에서 울산 PLC 공고만 찾아줘
+<div class="card"><h2>Preview 확장검색 테스트</h2><div class="code" id="expanded">울산 전기 공고를 중소기업까지 포함해서 전체로 찾아줘</div><button class="btn secondary" data-copy="expanded">확장 테스트 복사</button><div class="sub" style="margin-top:10px">이 요청에서만 scope=expanded를 사용해 고용24 일반채용을 추가해야 합니다. 답변에는 기본범위와 달리 <b>확장검색</b>임을 표시해야 합니다.</div></div>
+
+<div class="card"><h2>추가 테스트</h2><div class="code">1. 고용24 공채속보에서 전기 공고 찾아줘
+2. 고용24 일반채용까지 포함해서 울산 PLC 공고 찾아줘
 3. 한국석유공사 현재 공고 찾아줘
 4. 사이트 분석결과를 붙여넣고 지원전략 짜줘</div></div>
 </div>
