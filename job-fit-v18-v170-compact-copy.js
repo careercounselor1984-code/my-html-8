@@ -9,10 +9,10 @@
 
     const style=document.createElement('style');
     style.textContent=`
-      .v170Compact{margin-top:10px;padding:10px;background:#f6fef9;border:1px solid #abefc6;border-radius:10px}
-      .v170CompactTitle{font-size:12px;font-weight:900;color:#344054;margin-bottom:7px}
-      .v170Compact textarea{width:100%;box-sizing:border-box;height:155px;min-height:155px;resize:vertical;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#172033;padding:9px 10px;font:12px/1.55 system-ui,-apple-system,'Noto Sans KR',sans-serif}
-      .v170CompactActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}.v170CompactActions .btn{margin-top:0}
+      .v170Compact{margin-top:8px;padding:9px 10px;background:#f6fef9;border:1px solid #abefc6;border-radius:10px}
+      .v170CompactTitle{font-size:12px;font-weight:900;color:#344054;margin-bottom:6px}
+      .v170Compact textarea{width:100%;box-sizing:border-box;height:145px;min-height:145px;resize:vertical;border:1px solid #d0d5dd;border-radius:8px;background:#fff;color:#172033;padding:8px 10px;font:12px/1.5 system-ui,-apple-system,'Noto Sans KR',sans-serif}
+      .v170CompactActions{display:flex;gap:7px;flex-wrap:wrap;margin-top:7px}.v170CompactActions .btn{margin-top:0}
     `;
     document.head.appendChild(style);
 
@@ -46,6 +46,7 @@
         '링크: '+link,
         '기타: '+other
       ].join('\n');
+      item.querySelector('.v169Extra')?.remove();
       item.querySelectorAll('.v170Compact').forEach(x=>x.remove());
       const box=document.createElement('div');
       box.className='v170Compact';
