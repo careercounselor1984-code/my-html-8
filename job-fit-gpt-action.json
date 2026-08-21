@@ -2,8 +2,8 @@
   "openapi": "3.1.1",
   "info": {
     "title": "GoodJob Job Fit Strategy API",
-    "version": "1.4.0",
-    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It separates direct role relevance from region-role placement confirmation, filters academic-field false positives, retries transient source failures, and can return clearly marked partial results instead of failing the whole search."
+    "version": "1.5.1",
+    "description": "Read-only recruitment search API for the GoodJob recruitment support-strategy GPT. It searches ALIO, CLEANEYE, corporate recruitment data, and live Work24 job postings. It separates direct role relevance from region-role placement confirmation, uses Work24 detail fields for occupation relevance, filters known false positives, retries transient source failures, and returns clearly marked partial results when necessary."
   },
   "servers": [
     {
@@ -24,9 +24,9 @@
                 "properties": {
                   "action": {"type": "string", "enum": ["status", "search_jobs", "role_snapshot"]},
                   "keyword": {"type": "string", "description": "Job or recruitment keyword. Related role terms may be separated by spaces, commas, vertical bars, or slashes."},
-                  "region": {"type": "string", "description": "Preferred recruitment region such as 울산, 부산, 경남, 전국"},
-                  "source": {"type": "string", "enum": ["all", "alio", "cleaneye", "corporate"]},
-                  "matchMode": {"type": "string", "enum": ["broad", "role"], "description": "Use role for occupation-focused searches. Qualification/preference-only noise and academic specialty false positives are excluded, while explicit role evidence such as <기술/전기> remains valid."},
+                  "region": {"type": "string", "description": "Preferred recruitment region such as 울산, 부산, 경남, 전국."},
+                  "source": {"type": "string", "enum": ["all", "alio", "cleaneye", "corporate", "work24"], "description": "Use all unless the user explicitly asks for one source. work24 performs live Work24 recruitment lookup."},
+                  "matchMode": {"type": "string", "enum": ["broad", "role"], "description": "Use role for occupation-focused searches. Qualification/preference-only noise and academic specialty false positives are excluded. For Work24, primary occupation is stronger evidence than related occupations or duties."},
                   "limit": {"type": "integer", "minimum": 1, "maximum": 30}
                 },
                 "required": ["action"],
@@ -65,7 +65,7 @@
                     "sampleCount": {"type": "integer"},
                     "jobs": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
                     "topTitles": {"type": "array", "items": {"type": "object", "additionalProperties": true}},
-                    "sourceCounts": {"type": "object", "additionalProperties": true},
+                    "sourceCounts": {"type": "object", "description": "Counts of matched result rows by source. WORK24 means live Work24 results.", "additionalProperties": true},
                     "quality": {"type": "object", "description": "Includes directRoleMatches, relatedRoleMatches, regionRolePairingNeedsCheck, and confirmedRegionRoleMatches.", "additionalProperties": true},
                     "cautions": {"type": "array", "items": {"type": "string"}},
                     "modules": {"type": "object", "additionalProperties": true},
