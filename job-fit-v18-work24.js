@@ -38,7 +38,7 @@
         j.certifications?"자격면허: "+j.certifications:"",
         j.preference?"우대사항: "+j.preference:"",
         (j.regions||[]).length?"근무지역: "+j.regions.join(", "):""
-      ].filter(Boolean).join("\n")};
+      ].filter(Boolean).join("\\n")};
 
       function w24Keywords(q){
         const text=String(q||"").trim();
@@ -52,7 +52,7 @@
       function normalizeW24(x){
         const wanted=String(x.wantedAuthNo||"");
         const rel=String(x.relatedJobs||"").split(/[,/|]/).map(v=>v.trim()).filter(Boolean);
-        const qual=[x.education?"학력: "+x.education:"",x.career?"경력: "+x.career:"",x.major?"전공: "+x.major:"",x.certificate?"자격면허: "+x.certificate:"",x.otherGuide?"기타안내: "+x.otherGuide:""] .filter(Boolean).join("\n");
+        const qual=[x.education?"학력: "+x.education:"",x.career?"경력: "+x.career:"",x.major?"전공: "+x.major:"",x.certificate?"자격면허: "+x.certificate:"",x.otherGuide?"기타안내: "+x.otherGuide:""] .filter(Boolean).join("\\n");
         return{
           ...x,source:"WORK24",job_key:"W24:"+(wanted||x.url||Math.random()),company:x.company||"",title:x.title||"",
           regions:[x.region].filter(Boolean),region_name:x.region||"",workplace:x.region||"",employment_type:x.employmentType||"",
@@ -127,7 +127,7 @@
       const baseAnalyze=analyze;analyze=function(p,j,ro){return j?.source==="WORK24"?analyzeW24(p,j,ro):baseAnalyze(p,j,ro)};
 
       const baseChoose=choose;choose=function(k){baseChoose(k);if(sel?.source==="WORK24"&&$("jobinfo")){const box=document.createElement("div");box.className="w24src";box.innerHTML='<b>출처: 고용24</b><br>목록+상세 API 정보를 분석에 사용했습니다. 최종 지원자격·업무·접수상태는 고용24 원문을 확인하세요.';$("jobinfo").appendChild(box)}};
-      const baseShareText=shareText;shareText=function(){const t=baseShareText();return sel?.source==="WORK24"?t+"\n※ 자료출처: 고용노동부 고용24":t};
+      const baseShareText=shareText;shareText=function(){const t=baseShareText();return sel?.source==="WORK24"?t+"\\n※ 자료출처: 고용노동부 고용24":t};
 
       function localRows(){const sf=$("sourceFilter").value,qq=N($("q").value);return jobs.filter(isOpen).filter(j=>(sf==="ALL"||j.source===sf)&&rmatch(j)&&(!qq||N([j.company,j.title,(j.ncs_names||[]).join(" "),j.recruit_field||"",j.job_detail||"",j.qualification||""].join(" ")).includes(qq))).sort((a,b)=>String(a.end_date||"99999999").localeCompare(String(b.end_date||"99999999"))).slice(0,180)}
       renderPick=function(){const sf=$("sourceFilter").value;if(sf==="SARAMIN"){$("pick").innerHTML='<div class="sub">사람인 API 승인 대기중입니다.</div>';return}const xs=localRows();$("pick").innerHTML=xs.length?xs.map(j=>card(j,true)).join(""):(String($("q").value||"").trim().length<2&&sf==="WORK24"?'<div class="sub">고용24 검색은 직무·공고 검색어를 2글자 이상 입력하세요.</div>':'<div class="sub">선택한 조건의 진행중 공고가 없습니다.</div>');document.querySelectorAll("#pick .pick").forEach(el=>el.addEventListener("click",()=>choose(el.dataset.k)))};
