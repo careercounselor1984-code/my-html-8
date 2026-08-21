@@ -2,18 +2,20 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Welfare Policy Search and Eligibility API",
-    "version": "2.1.0",
-    "description": "Search Korean welfare policies, run conservative eligibility screening, apply 2026 detail checks, and return practical application guidance using only user-provided facts."
+    "version": "2.2.0",
+    "description": "Search Korean welfare policies and run conservative eligibility screening with 2026 detail checks and practical application guidance. Use only user-provided personal facts. Diagnosis responses can be compact and authoritative.\n"
   },
   "servers": [
-    {"url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-router"}
+    {
+      "url": "https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/welfare-gpt-router"
+    }
   ],
   "paths": {
     "/": {
       "post": {
         "operationId": "searchOrDiagnoseWelfarePolicies",
-        "summary": "Search policies or run eligibility diagnosis with execution guidance",
-        "description": "Use action=search for first-stage policy search and action=diagnose for follow-up eligibility screening. For broad requests use interest=전체. Never infer missing personal facts.",
+        "summary": "Search policies or run final eligibility diagnosis",
+        "description": "Use action=search only when the user has provided a basic profile and needs first-stage policy discovery. For broad requests use interest=전체. If the user already provided income, housing, assets, household, crisis, medical or credit facts, prefer action=diagnose directly. IMPORTANT: when the response has mode=SECOND_STAGE_ELIGIBILITY or compactResponse=true, finalDisplayItems is the sole authoritative policy list for the answer. Preserve every displayRank, name and eligibilityStatus exactly. Follow sectionLock. Do not add, remove, replace, rerank or move policies using earlier search results, conversation context, general knowledge or web browsing. Do not perform a second policy-discovery search. Web verification, if absolutely needed, may only verify details of a policy already present in finalDisplayItems and must never change the list.\n",
         "requestBody": {
           "required": true,
           "content": {
@@ -22,228 +24,255 @@
                 "type": "object",
                 "additionalProperties": false,
                 "properties": {
-                  "action": {"type": "string", "enum": ["search", "diagnose"]},
-                  "age": {"type": "integer", "minimum": 0, "maximum": 120},
-                  "gender": {"type": "string", "enum": ["선택 안함", "여성", "남성"]},
-                  "sido": {"type": "string"},
-                  "sigungu": {"type": "string"},
-                  "employmentStatus": {"type": "string"},
-                  "maritalStatus": {"type": "string", "enum": ["선택 안함", "미혼", "기혼", "기타"]},
-                  "householdType": {"type": "string", "enum": ["선택 안함", "1인가구", "부부", "부부+자녀", "한부모", "조손가구", "기타"]},
-                  "hasChildren": {"type": "string", "enum": ["선택 안함", "없음", "있음"]},
-                  "childrenAges": {"type": "array", "items": {"type": "integer", "minimum": 0, "maximum": 30}, "maxItems": 8},
-                  "interest": {"type": "string", "enum": ["전체", "취업·훈련", "주거", "금융", "생계", "의료", "심리·마음건강", "돌봄", "교육·문화", "청년정책"]},
-                  "keyword": {"type": "string"},
-                  "annualIncome": {"type": "integer", "minimum": 0},
-                  "monthlyIncome": {"type": "integer", "minimum": 0},
-                  "livingWithParents": {"type": "boolean"},
-                  "noHome": {"type": "boolean"},
-                  "housingType": {"type": "string", "enum": ["부모님 집", "월세", "전세", "자가", "무상거주", "기타"]},
-                  "rentDeposit": {"type": "integer", "minimum": 0},
-                  "monthlyRent": {"type": "integer", "minimum": 0},
-                  "savings": {"type": "integer", "minimum": 0},
-                  "vehicleValue": {"type": "integer", "minimum": 0},
-                  "assetsTotal": {"type": "integer", "minimum": 0},
-                  "householdSize": {"type": "integer", "minimum": 1, "maximum": 20},
-                  "householdMonthlyIncome": {"type": "integer", "minimum": 0},
-                  "householdAssetsTotal": {"type": "integer", "minimum": 0},
-                  "priorityWelfareStatus": {"type": "array", "items": {"type": "string"}},
-                  "crisisReason": {"type": "string"},
-                  "medicalExpenseNeed": {"type": "boolean"},
-                  "creditNeed": {"type": "boolean"},
-                  "creditStatus": {"type": "string"}
+                  "action": {
+                    "type": "string",
+                    "enum": [
+                      "search",
+                      "diagnose"
+                    ]
+                  },
+                  "age": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 120
+                  },
+                  "gender": {
+                    "type": "string",
+                    "enum": [
+                      "선택 안함",
+                      "여성",
+                      "남성"
+                    ]
+                  },
+                  "sido": {
+                    "type": "string"
+                  },
+                  "sigungu": {
+                    "type": "string"
+                  },
+                  "employmentStatus": {
+                    "type": "string"
+                  },
+                  "maritalStatus": {
+                    "type": "string",
+                    "enum": [
+                      "선택 안함",
+                      "미혼",
+                      "기혼",
+                      "기타"
+                    ]
+                  },
+                  "householdType": {
+                    "type": "string",
+                    "enum": [
+                      "선택 안함",
+                      "1인가구",
+                      "부부",
+                      "부부+자녀",
+                      "한부모",
+                      "조손가구",
+                      "기타"
+                    ]
+                  },
+                  "hasChildren": {
+                    "type": "string",
+                    "enum": [
+                      "선택 안함",
+                      "없음",
+                      "있음"
+                    ]
+                  },
+                  "childrenAges": {
+                    "type": "array",
+                    "items": {
+                      "type": "integer",
+                      "minimum": 0,
+                      "maximum": 30
+                    },
+                    "maxItems": 8
+                  },
+                  "interest": {
+                    "type": "string",
+                    "enum": [
+                      "전체",
+                      "취업·훈련",
+                      "주거",
+                      "금융",
+                      "생계",
+                      "의료",
+                      "심리·마음건강",
+                      "돌봄",
+                      "교육·문화",
+                      "청년정책"
+                    ]
+                  },
+                  "keyword": {
+                    "type": "string"
+                  },
+                  "annualIncome": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "monthlyIncome": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "livingWithParents": {
+                    "type": "boolean"
+                  },
+                  "noHome": {
+                    "type": "boolean",
+                    "description": "true means the user explicitly says they do not own a home."
+                  },
+                  "housingType": {
+                    "type": "string",
+                    "enum": [
+                      "부모님 집",
+                      "월세",
+                      "전세",
+                      "자가",
+                      "무상거주",
+                      "기타"
+                    ]
+                  },
+                  "rentDeposit": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "monthlyRent": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "savings": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "vehicleValue": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "assetsTotal": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "householdSize": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "maximum": 20
+                  },
+                  "householdMonthlyIncome": {
+                    "type": "integer",
+                    "minimum": 0
+                  },
+                  "householdAssetsTotal": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "description": "Approximate total household assets in KRW including housing, deposits, savings and vehicles."
+                  },
+                  "priorityWelfareStatus": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "crisisReason": {
+                    "type": "string"
+                  },
+                  "medicalExpenseNeed": {
+                    "type": "boolean"
+                  },
+                  "creditNeed": {
+                    "type": "boolean"
+                  },
+                  "creditStatus": {
+                    "type": "string"
+                  }
                 },
-                "required": ["action"]
+                "required": [
+                  "action"
+                ]
               }
             }
           }
         },
         "responses": {
           "200": {
-            "description": "Successful policy search or eligibility screening response",
+            "description": "Successful policy search or authoritative eligibility diagnosis",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "ok": {"type": "boolean"},
-                    "mode": {"type": "string"},
-                    "responseMode": {"type": "string"},
-                    "masterResult": {"type": "boolean"},
-                    "diagnosisVersion": {"type": "string"},
-                    "detailCriteriaVersion": {"type": "string"},
-                    "executionGuideVersion": {"type": "string"},
+                    "ok": {"type":"boolean"},
+                    "mode": {"type":"string"},
+                    "responseMode": {"type":"string"},
+                    "compactResponse": {"type":"boolean","description":"When true, use finalDisplayItems as the only policy list."},
+                    "compactResponseVersion": {"type":"string"},
+                    "masterResult": {"type":"boolean"},
+                    "interest": {"type":"string"},
+                    "total": {"type":"integer"},
+                    "finalAuditVersion": {"type":"string"},
+                    "diagnosisVersion": {"type":"string"},
+                    "detailCriteriaVersion": {"type":"string"},
+                    "executionGuideVersion": {"type":"string"},
+                    "routerDecision": {
+                      "type":"object",
+                      "properties": {
+                        "originalAction":{"type":"string"},
+                        "effectiveAction":{"type":"string"},
+                        "autoPromoted":{"type":"boolean"},
+                        "reason":{"type":"string"}
+                      },
+                      "additionalProperties":true
+                    },
                     "services": {
-                      "type": "array",
+                      "type":"array",
+                      "description":"First-stage search results. Ignore this field if compactResponse=true.",
                       "items": {
-                        "type": "object",
+                        "type":"object",
                         "properties": {
-                          "id": {"type": "string"},
-                          "name": {"type": "string"},
-                          "displayRank": {"type": "integer"},
-                          "summary": {"type": "string"},
-                          "support": {"type": "string"},
-                          "officialUrl": {"type": "string"},
-                          "officialUrlLine": {"type": "string"},
-                          "eligibilityAssessment": {
-                            "type": "object",
-                            "properties": {
-                              "eligibilityStatus": {"type": "string"},
-                              "reason": {"type": "string"},
-                              "missingFields": {"type": "array", "items": {"type": "string"}},
-                              "practicalPriority": {"type": "string"},
-                              "caution": {"type": "string"}
-                            },
-                            "additionalProperties": true
-                          },
-                          "detailScreening": {
-                            "type": "object",
-                            "properties": {
-                              "detailStatus": {"type": "string"},
-                              "officialCriteriaYear": {"type": "integer"},
-                              "incomeThreshold": {"type": "number"},
-                              "incomeLimit75Percent": {"type": "number"},
-                              "simpleIncomeComparison": {"type": "string"},
-                              "incomeCheck": {"type": "string"},
-                              "reason": {"type": "string"},
-                              "officialRule": {"type": "string"},
-                              "missingFields": {"type": "array", "items": {"type": "string"}},
-                              "caution": {"type": "string"},
-                              "sourceLabel": {"type": "string"}
-                            },
-                            "additionalProperties": true
-                          },
-                          "executionGuide": {
-                            "type": "object",
-                            "properties": {
-                              "actionStatus": {"type": "string"},
-                              "nextAction": {"type": "string"},
-                              "applicationChannel": {"type": "string"},
-                              "applicationUrl": {"type": "string"},
-                              "applicationSteps": {"type": "array", "items": {"type": "string"}},
-                              "preparationChecklist": {"type": "array", "items": {"type": "string"}},
-                              "requiredChecks": {"type": "array", "items": {"type": "string"}},
-                              "reconsiderWhen": {"type": "string"},
-                              "caution": {"type": "string"},
-                              "verifiedAt": {"type": "string"},
-                              "sourceUrl": {"type": "string"}
-                            },
-                            "additionalProperties": true
-                          }
+                          "id":{"type":"string"},"name":{"type":"string"},"source":{"type":"string"},"agency":{"type":"string"},"summary":{"type":"string"},"support":{"type":"string"},"target":{"type":"string"},"qualificationDetails":{"type":"string"},"applicationMethod":{"type":"string"},"contact":{"type":"string"},"category":{"type":"string"},"region":{"type":"string"},"applicationPeriod":{"type":"string"},"displayRank":{"type":"integer"},"recommendationTier":{"type":"string"},"recommendationReason":{"type":"string"},"officialUrl":{"type":"string"},"officialUrlLine":{"type":"string"},"mustPrintOfficialUrl":{"type":"boolean"}
                         },
-                        "additionalProperties": true
+                        "additionalProperties":true
                       }
                     },
-                    "assessmentCounts": {
-                      "type": "object",
+                    "presentationPlan": {
+                      "type":"object",
                       "properties": {
-                        "신청 가능성 높음": {"type": "integer"},
-                        "조건 확인 필요": {"type": "integer"},
-                        "현재 불가 가능성 높음": {"type": "integer"}
+                        "version":{"type":"string"},
+                        "introOrder":{"type":"array","items":{"type":"string"}},
+                        "sections":{"type":"object","properties":{"priority":{"type":"array","items":{"type":"integer"}},"conditional":{"type":"array","items":{"type":"integer"}},"reference":{"type":"array","items":{"type":"integer"}}},"additionalProperties":true}
                       },
-                      "additionalProperties": true
+                      "additionalProperties":true
                     },
-                    "nextQuestionRound": {"type": "integer"},
-                    "nextQuestions": {
-                      "type": "array",
-                      "items": {
-                        "type": "object",
-                        "properties": {
-                          "id": {"type": "string"},
-                          "text": {"type": "string"},
-                          "fields": {"type": "array", "items": {"type": "string"}}
-                        },
-                        "additionalProperties": true
-                      }
-                    },
-                    "diagnosisMasterLock": {
-                      "type": "object",
-                      "properties": {
-                        "locked": {"type": "boolean"},
-                        "mustUseAllServices": {"type": "boolean"},
-                        "mustPreserveDisplayRank": {"type": "boolean"},
-                        "mustNotAddServices": {"type": "boolean"},
-                        "serviceCount": {"type": "integer"},
-                        "allowedServiceNames": {"type": "array", "items": {"type": "string"}},
-                        "rules": {"type": "array", "items": {"type": "string"}}
-                      },
-                      "additionalProperties": true
-                    },
+                    "masterIntroOrder":{"type":"array","items":{"type":"string"}},
+                    "assessmentCounts":{"type":"object","properties":{"신청 가능성 높음":{"type":"integer"},"조건 확인 필요":{"type":"integer"},"현재 불가 가능성 높음":{"type":"integer"}},"additionalProperties":true},
+                    "sectionLock":{"type":"object","description":"Authoritative final section membership for diagnosis.","properties":{"highRanks":{"type":"array","items":{"type":"integer"}},"conditionalRanks":{"type":"array","items":{"type":"integer"}},"lowRanks":{"type":"array","items":{"type":"integer"}},"rule":{"type":"string"}},"additionalProperties":true},
+                    "diagnosisMasterLock":{"type":"object","description":"Hard lock for the final diagnosis policy list.","properties":{"locked":{"type":"boolean"},"mustUseAllServices":{"type":"boolean"},"mustPreserveDisplayRank":{"type":"boolean"},"mustNotAddServices":{"type":"boolean"},"mustIgnoreEarlierPolicyCandidates":{"type":"boolean"},"mustPreserveSectionMembership":{"type":"boolean"},"serviceCount":{"type":"integer"},"allowedServiceNames":{"type":"array","items":{"type":"string"}},"rules":{"type":"array","items":{"type":"string"}}},"additionalProperties":true},
                     "finalDisplayItems": {
-                      "type": "array",
+                      "type":"array",
+                      "description":"Sole authoritative policy list when mode=SECOND_STAGE_ELIGIBILITY or compactResponse=true. Use every item exactly once. Never add another policy and never change displayRank or eligibilityStatus.",
                       "items": {
-                        "type": "object",
+                        "type":"object",
                         "properties": {
-                          "displayRank": {"type": "integer"},
-                          "name": {"type": "string"},
-                          "eligibilityStatus": {"type": "string"},
-                          "reason": {"type": "string"},
-                          "executionGuide": {
-                            "type": "object",
-                            "properties": {
-                              "actionStatus": {"type": "string"},
-                              "nextAction": {"type": "string"},
-                              "applicationChannel": {"type": "string"},
-                              "applicationUrl": {"type": "string"},
-                              "applicationSteps": {"type": "array", "items": {"type": "string"}},
-                              "preparationChecklist": {"type": "array", "items": {"type": "string"}},
-                              "requiredChecks": {"type": "array", "items": {"type": "string"}},
-                              "reconsiderWhen": {"type": "string"},
-                              "caution": {"type": "string"}
-                            },
-                            "additionalProperties": true
-                          }
+                          "displayRank":{"type":"integer"},
+                          "name":{"type":"string"},
+                          "eligibilityStatus":{"type":"string","enum":["신청 가능성 높음","조건 확인 필요","현재 불가 가능성 높음"]},
+                          "reason":{"type":"string"},
+                          "practicalPriority":{"type":"string"},
+                          "caution":{"type":"string"},
+                          "officialUrlLine":{"type":"string"},
+                          "verifiedBenefitText":{"type":"string"},
+                          "detailScreening":{"type":"object","properties":{"detailStatus":{"type":"string"},"officialCriteriaYear":{"type":"integer"},"householdSize":{"type":"integer"},"incomeThreshold":{"type":"number"},"inputHouseholdMonthlyIncome":{"type":"number"},"simpleIncomeComparison":{"type":"string"},"estimatedBenefitUpperBound":{"type":"number"},"benefitFormula":{"type":"string"},"incomeLimit75Percent":{"type":"number"},"incomeCheck":{"type":"string"},"ulsanPropertyReferenceLimit":{"type":"number"},"ulsanHousingAssetDeductionLimit":{"type":"number"},"financialAssetLimit":{"type":"number"},"crisisCheck":{"type":"string"},"reason":{"type":"string"},"officialRule":{"type":"string"},"missingFields":{"type":"array","items":{"type":"string"}},"caution":{"type":"string"},"sourceLabel":{"type":"string"}},"additionalProperties":true},
+                          "executionGuide":{"type":"object","properties":{"actionStatus":{"type":"string"},"nextAction":{"type":"string"},"applicationChannel":{"type":"string"},"applicationUrl":{"type":"string"},"applicationSteps":{"type":"array","items":{"type":"string"}},"preparationChecklist":{"type":"array","items":{"type":"string"}},"requiredChecks":{"type":"array","items":{"type":"string"}},"reconsiderWhen":{"type":"string"},"caution":{"type":"string"}},"additionalProperties":true}
                         },
-                        "additionalProperties": true
+                        "additionalProperties":true
                       }
                     },
-                    "executionPlan": {
-                      "type": "object",
-                      "properties": {
-                        "immediate": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "displayRank": {"type": "integer"},
-                              "name": {"type": "string"},
-                              "nextAction": {"type": "string"},
-                              "applicationChannel": {"type": "string"},
-                              "applicationUrl": {"type": "string"}
-                            },
-                            "additionalProperties": true
-                          }
-                        },
-                        "conditional": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "displayRank": {"type": "integer"},
-                              "name": {"type": "string"},
-                              "nextAction": {"type": "string"},
-                              "requiredChecks": {"type": "array", "items": {"type": "string"}}
-                            },
-                            "additionalProperties": true
-                          }
-                        },
-                        "hold": {
-                          "type": "array",
-                          "items": {
-                            "type": "object",
-                            "properties": {
-                              "displayRank": {"type": "integer"},
-                              "name": {"type": "string"},
-                              "reconsiderWhen": {"type": "string"}
-                            },
-                            "additionalProperties": true
-                          }
-                        },
-                        "rule": {"type": "string"}
-                      },
-                      "additionalProperties": true
-                    },
-                    "outputDirective": {"type": "string"}
+                    "nextQuestionRound":{"type":"integer"},
+                    "nextQuestions":{"type":"array","items":{"type":"object","properties":{"id":{"type":"string"},"text":{"type":"string"},"fields":{"type":"array","items":{"type":"string"}}},"additionalProperties":true}},
+                    "verifiedPolicyFacts":{"type":"object","properties":{"nationalEmploymentSupport2026":{"type":"object","properties":{"type1JobSeekingAllowance":{"type":"string"},"dependentAllowance":{"type":"string"},"verifiedAt":{"type":"string"},"sourceUrl":{"type":"string"}},"additionalProperties":true}},"additionalProperties":true},
+                    "outputDirective":{"type":"string","description":"Mandatory rendering instructions for the final answer."}
                   },
                   "additionalProperties": true
                 }
@@ -251,28 +280,12 @@
             }
           },
           "400": {
-            "description": "Bad request",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {"ok": {"type": "boolean"}, "error": {"type": "string"}},
-                  "additionalProperties": true
-                }
-              }
-            }
+            "description":"Bad request",
+            "content":{"application/json":{"schema":{"type":"object","properties":{"ok":{"type":"boolean"},"error":{"type":"string"}},"additionalProperties":true}}}
           },
           "500": {
-            "description": "Server error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {"ok": {"type": "boolean"}, "error": {"type": "string"}},
-                  "additionalProperties": true
-                }
-              }
-            }
+            "description":"Server error",
+            "content":{"application/json":{"schema":{"type":"object","properties":{"ok":{"type":"boolean"},"error":{"type":"string"}},"additionalProperties":true}}}
           }
         }
       }
