@@ -8,17 +8,22 @@
 </style></head>
 <body><div class="wrap">
 <h1>좋은일자리 채용 지원전략 AI 설정 가이드</h1>
-<div class="sub">채용 지원가능성 분석센터 v1.8 연동용 Custom GPT 설정입니다. 채용 전용 API v1.4.0 / GPT 지침 1.4.1 기준입니다.</div>
+<div class="sub">채용 지원가능성 분석센터 v1.8 연동용 Custom GPT 설정입니다. 채용 전용 API / GPT 지침 1.5.1 기준입니다.</div>
 
-<div class="card"><h2>현재 핵심</h2><div class="ok"><b>API 안정화는 완료됐고, 이번 개정은 답변 가독성 정리입니다.</b><br>① ALIO · CLEANEYE · 기업DB 소스별 조회 및 자동 재시도 유지<br>② 일부 소스 실패 시 부분 표본으로 계속 답변<br>③ 시장요약에서는 깨지는 표를 쓰지 않고 주요공고를 글머리표로 표시<br>④ 조회 성공 출처와 실제 조건 일치 출처를 구분<br>⑤ '기관이 울산과 연관성이 높다' 같은 데이터 근거 없는 해석 제거<br>⑥ 같은 주의사항 반복을 줄이고 핵심 숫자를 먼저 표시</div></div>
+<div class="card"><h2>v1.5.1 핵심</h2><div class="ok"><b>고용24 채용정보를 실시간 4번째 소스로 추가했습니다.</b><br>① ALIO · CLEANEYE · 기업DB · 고용24를 함께 검색<br>② 고용24 목록 결과를 상세 API로 다시 확인해 모집직종·직무내용·학력·경력·자격·근무예정지를 보강<br>③ 고용24 주 모집직종이 일치하면 직접 관련, 관련직종·직무내용만 일치하면 관련 가능으로 구분<br>④ '전기용접원'처럼 단어만 겹치는 오탐을 일반 전기직에서 제외<br>⑤ ALIO 통합공고의 직무-지역 재확인 규칙, 자동 재시도·부분 표본 처리, 교수초빙 오탐 방지는 그대로 유지<br>⑥ 시장요약은 표 없이 핵심 숫자와 주요공고를 먼저 표시</div></div>
 
-<div class="card"><h2>기존 GPT에서 수정할 것</h2><div class="warn"><b>이번에는 Action 스키마를 다시 바꿀 필요 없습니다.</b> 기존 v1.4 Action은 그대로 두고 <b>지침만 전체 교체 → Preview 테스트 → 업데이트 저장</b>하면 됩니다.</div>
+<div class="card"><h2>기존 GPT에서 수정할 것</h2><div class="warn">이번에는 Action 스키마가 변경됐습니다. <b>지침 전체 교체 → Action 스키마 최신 버전 재가져오기/붙여넣기 → 인증 None 확인 → Preview 테스트 → 업데이트 저장</b> 순서로 진행하세요.</div>
 <a class="btn" href="https://chatgpt.com/gpts" target="_blank" rel="noopener">GPTs 열기</a><a class="btn secondary" href="job-fit-v18.html">분석센터 열기</a></div>
 
-<div class="card"><h2>전체 지침</h2><div class="code">시장요약 출력 규칙까지 정리한 지침 1.4.1입니다.</div><a class="btn" href="job-fit-gpt-instructions.txt" target="_blank">전체 지침 파일 열기</a></div>
+<div class="card"><h2>전체 지침</h2><div class="code">고용24 실시간 채용검색과 상세 직무 판정 규칙을 포함한 지침 1.5.1입니다.</div><a class="btn" href="job-fit-gpt-instructions.txt" target="_blank">전체 지침 파일 열기</a></div>
 
 <div class="card"><h2>Action 설정</h2><h3>인증</h3><div class="code">없음 (None)</div><h3>스키마 URL</h3><div class="code" id="schema">https://careercounselor1984-code.github.io/my-html-8/job-fit-gpt-action.json</div><button class="btn secondary" data-copy="schema">스키마 URL 복사</button><a class="btn secondary" href="job-fit-gpt-action.json" target="_blank">스키마 열기</a><h3>개인정보처리방침</h3><div class="code" id="privacy">https://careercounselor1984-code.github.io/my-html-8/job-fit-gpt-privacy.html</div><button class="btn secondary" data-copy="privacy">개인정보 URL 복사</button></div>
 
-<div class="card"><h2>테스트 문구</h2><div class="code" id="test">울산 전기 직무 채용시장 요약해줘</div><button class="btn secondary" data-copy="test">테스트 문구 복사</button><div class="sub" style="margin-top:10px">정상 출력은 표 없이 '한눈에 요약 → 조회 상태/출처별 일치 결과 → 핵심 숫자 → 주요 공고 글머리표 → 한계/준비 포인트' 순서로 나와야 합니다. 조회가 정상이라면 ALIO·CLEANEYE·기업DB 조회 성공 여부와 실제 조건 일치 건수를 구분해야 합니다.</div></div>
+<div class="card"><h2>Preview 테스트</h2><div class="code" id="test">울산 전기 직무 채용시장 요약해줘</div><button class="btn secondary" data-copy="test">테스트 문구 복사</button><div class="sub" style="margin-top:10px">정상이라면 조회 성공 출처에 고용24가 포함되고, 실제 울산 민간 전기·전장·PLC 공고가 ALIO 공고와 함께 나와야 합니다. 고용24 공고는 근무지가 구체적으로 확인된 직접 관련 공고와 관련 가능 공고를 구분해야 하며, 공고 수는 고정값이 아니라 실행 시점의 실시간 표본으로 안내해야 합니다.</div></div>
+
+<div class="card"><h2>추가 테스트</h2><div class="code">1. 울산 전기 관련 현재 지원 가능한 공고 찾아줘
+2. 고용24에서 울산 PLC 공고만 찾아줘
+3. 한국석유공사 현재 공고 찾아줘
+4. 사이트 분석결과를 붙여넣고 지원전략 짜줘</div></div>
 </div>
 <script>async function cp(id,b){const e=document.getElementById(id),t=e.textContent;try{await navigator.clipboard.writeText(t);const x=b.textContent;b.textContent='✓ 복사 완료';setTimeout(()=>b.textContent=x,1200)}catch{}}document.querySelectorAll('[data-copy]').forEach(b=>b.onclick=()=>cp(b.dataset.copy,b));</script></body></html>
