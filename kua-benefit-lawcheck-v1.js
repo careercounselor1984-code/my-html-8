@@ -1,140 +1,86 @@
-/* 국민취업지원제도 수당 법령·2026 업무매뉴얼 점검 보조 패치 v1
- * 기존 페이지 기능을 변경하지 않고, 수당 관련 핵심 판정 기준을 안내하는 독립 패널을 추가합니다.
- * 기준: 2026 국민취업지원제도 업무매뉴얼 및 구직자취업촉진법 체계
+/* KUA allowance legal/manual patch - 2026-08-23
+ * Applies narrow corrections to the existing counselor guide without replacing its UI.
+ * Basis: 2026 국민취업지원제도 업무매뉴얼 / 구직자취업촉진법 체계.
  */
 (function(){
-  'use strict';
-  if (window.__KUA_BENEFIT_LAWCHECK_V1__) return;
-  window.__KUA_BENEFIT_LAWCHECK_V1__ = true;
+'use strict';
+if(window.__KUA_BENEFIT_LAWCHECK_V2__) return;
+window.__KUA_BENEFIT_LAWCHECK_V2__=true;
+var MEDIAN60=153.8543; // 2026 1인가구 기준중위소득 60%, 단위: 만원
+var EPS=0.0001;
+function txt(v){return String(v==null?'':v).replace(/\s+/g,' ').trim();}
+function money(v){var n=Math.round(v*10)/10;return String(n).replace(/\.0$/,'')+'만원';}
+function all(sel,root){return Array.prototype.slice.call((root||document).querySelectorAll(sel));}
+function strongInfo(title){return all('.info').filter(function(el){var s=el.querySelector('strong');return s&&txt(s.textContent)===title;});}
+function setInfo(el,title,body){if(!el)return;el.innerHTML='<strong>'+title+'</strong>'+body;}
+function findDetails(parts){return all('details').find(function(d){var s=d.querySelector('summary');var t=txt(s&&s.textContent);return parts.every(function(p){return t.indexOf(p)>=0;});});}
+function replaceContaining(needle,html){all('div,p,span,small,li').forEach(function(el){if(el.children.length>3)return;var t=txt(el.textContent);if(t.indexOf(needle)>=0)el.innerHTML=html;});}
 
-  const CSS = `
-  .kua-lawcheck{font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;margin:18px auto;max-width:1120px;padding:0 14px;color:#172033}
-  .kua-lawcheck *{box-sizing:border-box}
-  .kua-law-card{background:#fff;border:1px solid #dfe6ef;border-radius:16px;box-shadow:0 6px 20px rgba(25,42,70,.06);overflow:hidden}
-  .kua-law-head{padding:18px 20px;background:#f7f9fc;border-bottom:1px solid #e6ebf2}
-  .kua-law-head h2{font-size:20px;margin:0 0 6px}.kua-law-head p{margin:0;color:#5b6577;font-size:14px;line-height:1.55}
-  .kua-law-body{padding:18px 20px}.kua-law-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-  .kua-law-item{border:1px solid #e4e9f0;border-radius:12px;padding:14px;background:#fff}
-  .kua-law-item h3{font-size:16px;margin:0 0 8px}.kua-law-item p,.kua-law-item li{font-size:14px;line-height:1.6;color:#3d4757}
-  .kua-law-item ul{margin:8px 0 0;padding-left:18px}
-  .kua-law-badge{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:999px;background:#eef4ff;color:#1e56a0;margin-right:6px}
-  .kua-law-note{margin-top:14px;padding:12px 14px;border-radius:10px;background:#fff8e8;color:#6b531c;font-size:13px;line-height:1.55}
-  .kua-law-calc{margin-top:16px;border-top:1px solid #e7ebf0;padding-top:16px}
-  .kua-law-calc h3{font-size:17px;margin:0 0 12px}.kua-form-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-  .kua-field{display:flex;flex-direction:column;gap:6px}.kua-field label{font-size:13px;font-weight:700;color:#3b4556}
-  .kua-field select,.kua-field input{width:100%;padding:10px 11px;border:1px solid #ccd5e0;border-radius:9px;background:#fff;font-size:14px}
-  .kua-result{margin-top:12px;padding:14px;border-radius:12px;background:#f4f7fb;border:1px solid #dce4ef;font-size:14px;line-height:1.65}
-  .kua-result strong{font-size:16px}.kua-result small{display:block;color:#667085;margin-top:6px}
-  .kua-law-foot{padding:12px 20px 18px;color:#697386;font-size:12px;line-height:1.5}
-  @media(max-width:760px){.kua-law-grid,.kua-form-grid{grid-template-columns:1fr}.kua-law-head,.kua-law-body{padding:15px}.kua-lawcheck{padding:0 8px}}
-  `;
+// 1) 2026 소득 감액·0원 지급·지급정지 계산식 교체
+window.calcAllowance=function(suffix){
+ suffix=suffix||'';
+ var m=document.getElementById('allowMonthly'+suffix),g=document.getElementById('generalIncome'+suffix),p=document.getElementById('programIncome'+suffix),out=document.getElementById('allowCalcOut'+suffix);
+ if(!m||!g||!p||!out)return;
+ var monthly=Number(m.value)||0, general=Math.max(0,Number(g.value)||0), program=Math.max(0,Number(p.value)||0);
+ var total=general+program;
+ var threshold=Math.max(monthly*2,MEDIAN60);
+ var head='',detail='';
+ if(total<=monthly+EPS){
+   head='예상: 월 지급액 전액 지급 범위';
+   detail='신고소득 '+money(total)+'이 월 단위 지급액 '+money(monthly)+' 이하입니다.';
+ }else if(total<threshold-EPS){
+   var pay=Math.min(monthly,Math.max(0,threshold-total));
+   head='예상 감액 지급액: '+money(pay);
+   detail='2026 기준금액 '+money(threshold)+' - 신고소득 '+money(total)+'을 적용한 한도입니다.';
+ }else if(Math.abs(total-threshold)<=EPS){
+   head='판정: 0원 지급(부지급)';
+   detail='총 신고소득이 기준금액과 같습니다. 지급정지와 구분하여 처리합니다.';
+ }else if(general>threshold+EPS){
+   head='판정: 지급정지 가능';
+   detail='프로그램 참여수당을 제외한 신고소득 '+money(general)+'이 기준금액 '+money(threshold)+'을 초과합니다. 지급정지 횟수는 별도로 관리합니다.';
+ }else{
+   head='판정: 0원 지급(부지급)';
+   detail='총 신고소득은 기준금액을 초과하지만, 프로그램 참여수당을 제외한 신고소득이 기준금액을 초과하지 않습니다. 지급정지와 구분합니다.';
+ }
+ out.innerHTML='<strong>'+head+'</strong><br>'+detail+'<br><small>※ 소득만 반영한 계산입니다. 구직활동 일부 이행(50% 지급) 등 다른 제한사유가 함께 있으면 최종 지급액은 더 낮아질 수 있습니다.</small>';
+};
 
-  const html = `
-  <section class="kua-lawcheck" id="kua-lawcheck-v1">
-    <div class="kua-law-card">
-      <div class="kua-law-head">
-        <h2>수당 발생·구직촉진수당 판단 가이드</h2>
-        <p>지정일만으로 수당이 자동 발생하는 것이 아닙니다. 회차, 구직활동 이행, 소득, 취업·유예·중단 여부를 함께 확인합니다.</p>
-      </div>
-      <div class="kua-law-body">
-        <div class="kua-law-grid">
-          <div class="kua-law-item"><h3><span class="kua-law-badge">1유형</span>1회차</h3><p><b>IAP 수립 완료</b>가 지급요건입니다. 1회차 지급주기는 수급자격 인정통지일부터 IAP 수립일까지이며 1개월보다 짧을 수 있습니다.</p></div>
-          <div class="kua-law-item"><h3><span class="kua-law-badge">1유형</span>2회차 이후</h3><p>IAP 수립일 다음 날부터 월력상 1개월 단위입니다. 지급주기별 계획한 구직활동을 모두 이행하면 전액 지급합니다.</p></div>
-          <div class="kua-law-item"><h3>구직활동 일부 이행</h3><ul><li>계획한 활동의 50% 이상 이행: 월 지급액의 50% 지급</li><li>50% 미만 이행: 해당 지급주기 전액 부지급</li><li>재진단 필수 대면상담을 넣는 지급주기는 구직활동 3개 이상 계획</li></ul></div>
-          <div class="kua-law-item"><h3>지정일</h3><p>지정일은 <b>수당 자동발생일이 아니라 지급신청일</b>입니다. 2회차 이후 원칙적으로 지급주기의 마지막 날이며, 신청 후 구직활동·소득 등을 확인해 지급 여부를 결정합니다.</p></div>
-          <div class="kua-law-item"><h3>취업으로 종료되는 지급주기</h3><p>주 30시간 이상 임금근로, 신규 창업, 월 소득 250만원 이상 노무제공자로 취업하여 취업지원이 종료되면 취·창업일이 포함된 지급주기는 구직활동을 이행한 것으로 인정할 수 있습니다. 불완전 취업 또는 본인 희망 종료는 별도 판단합니다.</p></div>
-          <div class="kua-law-item"><h3>지급중단과 지급정지</h3><ul><li><b>구직활동 미이행</b> → 지급중단. 3회면 나머지 구직촉진수당 수급권 소멸, 취업지원서비스는 유지 가능</li><li><b>소득 기준 초과</b> → 지급정지. 3회면 수급자격 인정 철회 및 취업지원 중단</li></ul></div>
-          <div class="kua-law-item"><h3><span class="kua-law-badge">2유형</span>참여장려수당</h3><p>IAP 수립 다음 날부터 1개월 단위로, <b>고용센터 또는 위탁기관에 방문하여 30분 이상 집중취업상담</b>을 한 경우 월 1회 2만원, 최대 5회입니다. 외부 출장상담은 이 요건에 포함시키지 않습니다.</p></div>
-          <div class="kua-law-item"><h3><span class="kua-law-badge">2유형</span>2026 훈련참여지원수당</h3><p><b>2026년 폐지</b>되었으며 2025년 취업지원 신청자까지 종전 기준으로 지원합니다.</p></div>
-        </div>
+// 기존 도움말의 잘못된 기준선 문구 정정
+replaceContaining('기준선은 월 지급예정액의 2배','<strong>2026 소득 기준금액</strong> 월 단위 지급액의 2배와 1인가구 기준중위소득 60%(153만 8,543원) 중 더 큰 금액을 적용합니다.');
+replaceContaining('월 지급예정액의 2배','<strong>2026 소득 기준금액</strong> 월 단위 지급액의 2배와 1인가구 기준중위소득 60%(153만 8,543원) 중 더 큰 금액을 적용합니다.');
 
-        <div class="kua-law-note">※ 가족수당은 지급주기 중 하루라도 부양가족 요건에 해당하면 그 지급주기에는 전액 지급하는 방식입니다. 수급자별 월 지급액에 따라 소득 기준금액도 달라질 수 있습니다.</div>
+// 2) 지정일·소득 신고 표현 정정
+strongInfo('지정일').forEach(function(el){setInfo(el,'지정일','지정일은 수당이 자동 발생하는 날이 아니라 <b>지급신청일</b>입니다. 수당신청서와 구직활동 이행결과를 제출하고, 해당 지급주기의 소득·취업 여부 등을 확인한 뒤 지급 여부가 결정됩니다.');});
+strongInfo('소득신고는 무조건 먼저').forEach(function(el){setInfo(el,'소득 발생 시 먼저 알리기','알바·일용근로·단시간근로·프리랜서·사업소득·프로그램 수당 등 소득이 생기면 금액이 작아도 상담사에게 먼저 알리고, <b>지정일의 구직촉진수당 지급신청서에 소득 발생 여부·금액·발생일(기간)</b>을 신고합니다.');});
+strongInfo('소득신고').forEach(function(el){var t=txt(el.textContent);if(t.indexOf('알바')>=0||t.indexOf('프리랜서')>=0)setInfo(el,'소득신고','소득이 생기면 상담사에게 먼저 알리고, 지정일 지급신청서에 소득 발생 여부·금액·발생일(기간)을 신고합니다. 취업소득은 취업일자·형태·주 소정근로시간·회사명도 함께 신고합니다.');});
 
-        <div class="kua-law-calc">
-          <h3>빠른 판정</h3>
-          <div class="kua-form-grid">
-            <div class="kua-field"><label>회차</label><select id="kuaRound"><option value="1">1회차</option><option value="2" selected>2회차 이후</option></select></div>
-            <div class="kua-field"><label>계획한 구직활동 수</label><input id="kuaPlanned" type="number" min="0" max="20" value="2"></div>
-            <div class="kua-field"><label>이행한 구직활동 수</label><input id="kuaDone" type="number" min="0" max="20" value="2"></div>
-            <div class="kua-field"><label>월 구직촉진수당 지급액</label><select id="kuaMonthly"><option value="60" selected>60만원</option><option value="70">70만원</option><option value="80">80만원</option><option value="90">90만원</option><option value="100">100만원</option></select></div>
-            <div class="kua-field"><label>지급주기 신고소득</label><input id="kuaIncome" type="number" min="0" step="1" value="0" placeholder="만원"></div>
-            <div class="kua-field"><label>프로그램 참여수당 포함 여부</label><select id="kuaProgram"><option value="no" selected>아니오/없음</option><option value="yes">예 — 지급정지 판정은 별도 확인</option></select></div>
-          </div>
-          <div class="kua-result" id="kuaResult"></div>
-        </div>
-      </div>
-      <div class="kua-law-foot">업무 보조용 요약입니다. 실제 처분·지급 결정은 최신 법령, 고시, 업무매뉴얼 및 전산 확인 결과를 우선합니다.</div>
-    </div>
-  </section>`;
+// 3) 지급정지 누적 문구: 미신고와 지급정지를 혼동하지 않도록 분리
+strongInfo('지급정지 누적 주의').forEach(function(el){setInfo(el,'지급정지 누적 주의','프로그램 참여수당을 제외한 신고소득이 기준금액을 초과하여 <b>지급정지</b>가 3회가 되면 수급자격 인정 철회 및 취업지원 중단으로 이어집니다. 소득을 미신고하거나 적게 신고해 수당을 받은 경우에는 별도로 부정수급 처분 대상이 될 수 있습니다.');});
 
-  function threshold(monthly){
-    // 2026: 기준금액 = 월 단위 지급액의 2배 또는 1인가구 기준중위소득 60% 중 큰 금액.
-    // 매뉴얼 표: 60만원 수급자는 1,538,543원, 70~100만원은 각 지급액 2배가 더 큼.
-    return monthly === 60 ? 153.8543 : monthly * 2;
-  }
-  function render(){
-    const r = document.getElementById('kuaResult'); if(!r) return;
-    const round = +document.getElementById('kuaRound').value;
-    const planned = Math.max(0,+document.getElementById('kuaPlanned').value||0);
-    const done = Math.max(0,+document.getElementById('kuaDone').value||0);
-    const monthly = +document.getElementById('kuaMonthly').value;
-    const income = Math.max(0,+document.getElementById('kuaIncome').value||0);
-    const program = document.getElementById('kuaProgram').value;
+// 4) 취업으로 종료되는 지급주기 인정 요건 정정
+strongInfo('취업 인정은 아무 취업이나 되는 것이 아님').forEach(function(el){setInfo(el,'취업으로 종료되는 지급주기','지급주기 중 <b>① 주 30시간 이상 임금근로자로 취업, ② 신규 창업(사업자등록), ③ 월 소득 250만원 이상 노무제공자로 취업</b>하여 취업지원이 종료되면 취·창업일이 포함된 지급주기는 구직활동을 이행한 것으로 인정할 수 있습니다. 정규직 여부나 상용 고용보험 가입 자체가 이 인정의 공통 필수요건은 아닙니다. 불완전 취업·본인 희망 종료는 별도 판단합니다.');});
+strongInfo('프리랜서·창업 기준도 따로 확인').forEach(function(el){setInfo(el,'노무제공·창업은 종료요건 확인','노무제공자는 월 소득 250만원 이상 여부, 창업은 사업자등록 등 취업지원 종료요건을 확인합니다. 실제 지급주기 적용은 취·창업일과 종료사유를 함께 확인하세요.');});
 
-    if(round===1){
-      r.innerHTML='<strong>1회차는 IAP 수립 완료 여부를 먼저 확인</strong><small>1회차는 단순 구직활동 횟수 계산보다 IAP 수립 의무를 모두 이행하고 계획 수립을 완료했는지가 지급요건입니다.</small>';
-      return;
-    }
-    const ratio = planned>0 ? done/planned : 0;
-    let activityRate = ratio>=1 ? 1 : ratio>=0.5 ? 0.5 : 0;
-    let activityText = activityRate===1?'구직활동 전부 이행':activityRate===0.5?'구직활동 50% 이상 일부 이행':'구직활동 50% 미만 이행';
-    let activityPay = monthly*activityRate;
-    const t = threshold(monthly);
+// 5) 지급정지와 지급중단 구분을 기존 1유형 핵심 카드에 짧게 추가
+var incomeCard=document.getElementById('t1-income-employ-important');
+if(incomeCard&&!document.getElementById('kua-stop-distinction')){
+ var n=document.createElement('div');n.id='kua-stop-distinction';n.className='info blue';n.innerHTML='<strong>지급정지 ≠ 지급중단</strong><b>소득 기준 초과에 따른 지급정지 3회</b>는 수급자격 인정 철회·취업지원 전체 중단, <b>구직활동 미이행에 따른 지급중단 3회</b>는 남은 구직촉진수당 수급권 소멸로 구분합니다. 후자의 경우 취업지원서비스는 남은 기간 계속될 수 있습니다.';
+ var copy=incomeCard.querySelector('.copybox');incomeCard.insertBefore(n,copy||null);
+}
 
-    if(activityRate===0){
-      r.innerHTML=`<strong>판정: 해당 지급주기 전액 부지급</strong><small>${activityText}. 정당한 사유가 있는 경우 지급중단 여부가 달라질 수 있으므로 유예·정당한 사유를 별도 확인하세요.</small>`;
-      return;
-    }
+// 6) 2유형 참여장려수당의 방문·30분 요건과 2026 폐지수당 명시
+var faq2=findDetails(['참여장려수당','전화상담']);
+if(faq2){var sum=faq2.querySelector('summary');var children=Array.prototype.slice.call(faq2.children);children.forEach(function(c){if(c!==sum)c.remove();});var a=document.createElement('div');a.className='faq-answer';a.innerHTML='<span class="tag">2유형</span> 참여장려수당은 IAP 수립일 다음 날부터 1개월 단위로, <b>고용센터 또는 위탁기관에 방문하여 30분 이상 집중취업상담</b>을 한 경우 월 1회 2만원, 최대 5회(총 10만원) 지급합니다. 전화·문자상담이나 외부 출장상담은 방문요건으로 보지 않습니다.';faq2.appendChild(a);}
+strongInfo('방문상담').forEach(function(el){var t=txt(el.textContent);if(t.indexOf('2만원')>=0||t.indexOf('참여장려')>=0||t.indexOf('2유형')>=0)setInfo(el,'참여장려수당 방문요건','IAP 수립일 다음 날부터 1개월 단위로 <b>고용센터 또는 위탁기관에 직접 방문해 30분 이상 집중취업상담</b>을 실시한 경우 월 1회 2만원, 최대 5회(총 10만원)입니다. 전화·문자·외부 출장상담은 방문요건으로 보지 않습니다.');});
+if(faq2&&!document.getElementById('kua-type2-2026-note')){var note=document.createElement('div');note.id='kua-type2-2026-note';note.className='info blue';note.innerHTML='<strong>2026 수당 변경</strong><b>훈련참여지원수당은 2026년 폐지</b>되어 2025년 취업지원 신청자까지만 종전 기준을 적용합니다.';faq2.parentNode.insertBefore(note,faq2.nextSibling);}
 
-    if(income<=monthly){
-      r.innerHTML=`<strong>예상: ${activityPay.toFixed(0)}만원 지급 범위</strong><small>${activityText}. 신고소득 ${income.toFixed(0)}만원이 월 지급액 ${monthly}만원 이하입니다. 최종 지급액은 다른 제한사유를 함께 확인합니다.</small>`;
-      return;
-    }
+// 7) 구직활동 일부 이행 FAQ를 50% 기준으로 정확화
+var partial=all('details').find(function(d){var t=txt(d.querySelector('summary')&&d.querySelector('summary').textContent);return t.indexOf('구직활동')>=0&&(t.indexOf('적게')>=0||t.indexOf('일부')>=0||t.indexOf('못')>=0);});
+if(partial){var sm=partial.querySelector('summary');Array.prototype.slice.call(partial.children).forEach(function(c){if(c!==sm)c.remove();});var pa=document.createElement('div');pa.className='faq-answer';pa.innerHTML='계획한 구직활동의 <b>50% 이상을 이행하면 해당 지급주기 월 지급액의 50%를 지급</b>하고, <b>50% 미만이면 전액 부지급</b>합니다. 다만 정당한 사유·유예·취업종료 등 별도 사유가 있으면 그 기준을 함께 확인합니다.';partial.appendChild(pa);}
 
-    const incomeLimitPay = Math.max(0, Math.min(monthly, t-income));
-    let pay = Math.min(activityPay, incomeLimitPay);
-    if(income < t){
-      r.innerHTML=`<strong>예상: ${pay.toFixed(1).replace('.0','')}만원 감액 지급</strong><small>기준금액 약 ${t.toFixed(1)}만원 - 신고소득 ${income.toFixed(1)}만원을 적용한 한도와 구직활동 이행률에 따른 한도 중 작은 금액으로 판단합니다.</small>`;
-    } else if(income === t){
-      r.innerHTML=`<strong>판정: 0원 지급(부지급)</strong><small>신고소득이 기준금액과 같습니다. 지급정지와는 구분하여 관리해야 합니다.</small>`;
-    } else if(program==='yes'){
-      r.innerHTML=`<strong>추가 확인 필요: 0원 지급 또는 지급정지</strong><small>총 신고소득은 기준금액을 넘지만 프로그램 참여수당이 포함되어 있습니다. 프로그램 수당을 제외한 신고소득이 기준금액을 넘는지 분리 확인해야 합니다.</small>`;
-    } else {
-      r.innerHTML=`<strong>판정: 지급정지 가능</strong><small>프로그램 수당을 제외한 신고소득이 기준금액 약 ${t.toFixed(1)}만원을 초과한 것으로 입력되었습니다. 지급정지는 횟수를 별도 관리하며 3회 시 취업지원 전체 중단 사유가 될 수 있습니다.</small>`;
-    }
-  }
+// 8) 재진단 이미지와 텍스트가 충돌하지 않도록 최신 텍스트 우선 표시
+var imgCard=document.getElementById('type1IncomeImageCard');if(imgCard){var sp=imgCard.querySelector('.img-head span');if(sp&&txt(sp.textContent).indexOf('2026 최신')<0)sp.textContent=txt(sp.textContent)+' · 2026 최신 판정은 아래 텍스트·계산기 우선';}
 
-  function injectInto(doc){
-    if(!doc || doc.getElementById('kua-lawcheck-v1')) return false;
-    const style=doc.createElement('style');style.textContent=CSS;(doc.head||doc.documentElement).appendChild(style);
-    const wrap=doc.createElement('div');wrap.innerHTML=html;const node=wrap.firstElementChild;
-    const candidates=[
-      doc.querySelector('[id*="수당"],[class*="수당"],[id*="benefit"],[class*="benefit"],[id*="allowance"],[class*="allowance"]'),
-      doc.querySelector('main'), doc.querySelector('.container'), doc.body
-    ].filter(Boolean);
-    const target=candidates[0];
-    if(target===doc.body) target.appendChild(node); else target.parentNode.insertBefore(node,target.nextSibling);
-    ['kuaRound','kuaPlanned','kuaDone','kuaMonthly','kuaIncome','kuaProgram'].forEach(id=>doc.getElementById(id)?.addEventListener('input',render));
-    render(); return true;
-  }
-
-  function boot(){
-    let done=injectInto(document);
-    document.querySelectorAll('iframe').forEach(f=>{
-      const tryFrame=()=>{try{if(injectInto(f.contentDocument)) done=true;}catch(e){}};
-      tryFrame(); f.addEventListener('load',tryFrame,{once:false});
-    });
-    if(!done){setTimeout(boot,800);}
-  }
-  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',boot); else boot();
+// 현재 화면의 모든 소득 계산기를 새 공식으로 즉시 재계산
+all('[id^="allowMonthly"]').forEach(function(el){var suffix=el.id.slice('allowMonthly'.length);try{window.calcAllowance(suffix);}catch(e){}});
 })();

@@ -1,1 +1,0 @@
-KUA benefit law-check assets added on 2026-08-23. Pending inclusion in the main page loader after identifying the current deployed entry point.
