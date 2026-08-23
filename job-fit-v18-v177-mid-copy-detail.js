@@ -71,7 +71,7 @@
     function enhanceNow(item){
       const j=jobFor(item);if(!j||!['WORK24_OPEN','CORPORATE'].includes(j.source))return false;
       const ta=textarea(item);if(!ta)return false;
-      ta.value=build(j,j.w24_open_detail||{});
+      if(ta.dataset.userEdited!=='1')ta.value=build(j,j.w24_open_detail||{});
       return true;
     }
     async function enhance(item){
