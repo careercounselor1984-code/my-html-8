@@ -23,7 +23,7 @@
       const j=list.find(x=>x.job_key===item.dataset.k);
       if(!j||j.source!=='ALIO')return;
       const ta=item.querySelector('.v174Compact textarea,.v170Compact textarea,.v166Copy textarea');
-      if(ta)ta.value=build(j);
+      if(ta&&ta.dataset.userEdited!=='1')ta.value=build(j);
     }
     document.querySelectorAll('.v166Item').forEach(enhance);
     window.addEventListener('click',e=>{
