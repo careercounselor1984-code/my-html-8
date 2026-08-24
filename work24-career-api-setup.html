@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>고용24 직무·직업정보 API 등록</title>
+  <style>
+    *{box-sizing:border-box} body{margin:0;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif;background:#f5f7fb;color:#172033}
+    .wrap{max-width:720px;margin:48px auto;padding:0 18px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:20px;padding:28px;box-shadow:0 10px 32px rgba(16,24,40,.06)}
+    h1{font-size:25px;margin:0 0 8px}.sub{margin:0 0 24px;color:#667085;line-height:1.65}.field{margin:18px 0}label{display:block;font-weight:750;margin-bottom:8px}
+    input{width:100%;padding:14px;border:1px solid #cfd4dc;border-radius:11px;font-size:16px;background:#fff}.btn{width:100%;margin-top:8px;padding:15px;border:0;border-radius:11px;background:#175cd3;color:#fff;font-size:16px;font-weight:750;cursor:pointer}
+    .btn:disabled{opacity:.6;cursor:wait}.box{margin:14px 0;padding:14px;border-radius:11px;line-height:1.55}.ok{background:#ecfdf3;border:1px solid #abefc6;color:#067647}.warn{background:#fffaeb;border:1px solid #fedf89;color:#b54708}.info{background:#eff8ff;border:1px solid #b2ddff;color:#175cd3}.small{margin-top:16px;color:#667085;font-size:13px;line-height:1.6}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+<div class="wrap"><div class="card">
+  <h1>고용24 직무·직업정보 API 등록</h1>
+  <p class="sub">인증키는 이 페이지에만 입력하고 Supabase Vault에 저장합니다. ChatGPT 대화창에는 인증키를 붙여넣지 마세요.</p>
+  <div id="status" class="box info">등록 상태를 확인하고 있습니다…</div>
+  <form id="form">
+    <div id="dutyField" class="field">
+      <label for="dutyKey">직무정보 API 인증키</label>
+      <input id="dutyKey" type="password" autocomplete="off" placeholder="고용24 직무정보 API 인증키" />
+    </div>
+    <div id="occupationField" class="field">
+      <label for="occupationKey">직업정보 API 인증키</label>
+      <input id="occupationKey" type="password" autocomplete="off" placeholder="고용24 직업정보 API 인증키" />
+    </div>
+    <button id="submit" class="btn" type="submit">안전하게 등록하기</button>
+  </form>
+  <div class="small">두 키가 저장되면 입력칸이 자동으로 사라집니다. 저장된 원문 인증키는 화면에 다시 표시하지 않습니다.</div>
+</div></div>
+<script>
+const STATUS_URL='https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/job-taxonomy-gpt/status';
+const SETUP_URL='https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/w24-career-setup-q7n4m2';
+const $=id=>document.getElementById(id);
+async function refresh(){
+  try{
+    const r=await fetch(STATUS_URL,{cache:'no-store'}); const d=await r.json();
+    if(!d.ok) throw new Error(d.error||'상태 확인 실패');
+    const duty=d.dutyInfo==='connected', occ=d.occupationInfo==='connected';
+    $('dutyField').classList.toggle('hidden',duty); $('occupationField').classList.toggle('hidden',occ);
+    $('dutyKey').required=!duty; $('occupationKey').required=!occ;
+    if(duty&&occ){$('status').className='box ok';$('status').textContent='등록 완료: 직무정보 API와 직업정보 API가 모두 연결되어 있습니다.';$('form').classList.add('hidden');}
+    else{$('status').className='box info';$('status').textContent=`현재 상태 · 직무정보: ${duty?'연결됨':'인증키 필요'} / 직업정보: ${occ?'연결됨':'인증키 필요'}`;}
+  }catch(e){$('status').className='box warn';$('status').textContent='상태 확인 오류: '+(e.message||e);}
+}
+$('form').addEventListener('submit',async e=>{
+  e.preventDefault(); const btn=$('submit'); btn.disabled=true; btn.textContent='등록 중…';
+  try{
+    const body={}; if(!$('dutyField').classList.contains('hidden')) body.dutyKey=$('dutyKey').value.trim(); if(!$('occupationField').classList.contains('hidden')) body.occupationKey=$('occupationKey').value.trim();
+    const r=await fetch(SETUP_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    const text=await r.text(); if(!r.ok) throw new Error('등록 요청 실패 ('+r.status+')');
+    $('status').className='box ok'; $('status').textContent='인증키 저장 요청이 완료되었습니다. 연결 상태를 다시 확인합니다.';
+    $('dutyKey').value=''; $('occupationKey').value=''; await refresh();
+  }catch(e){$('status').className='box warn';$('status').textContent='등록 오류: '+(e.message||e);}
+  finally{btn.disabled=false;btn.textContent='안전하게 등록하기';}
+});
+refresh();
+</script>
+</body>
+</html>
