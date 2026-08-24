@@ -5,33 +5,40 @@
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>고용24 API 키 등록</title>
 <style>
-*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}.wrap{max-width:640px;margin:42px auto;padding:0 18px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:24px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:23px;margin:0 0 8px}.sub{font-size:13px;color:#667085;line-height:1.6;margin-bottom:22px}.field{margin:16px 0}label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}.inputrow{display:flex;gap:7px}input{width:100%;border:1px solid #d0d5dd;border-radius:10px;padding:12px 13px;font-size:14px;outline:none}input:focus{border-color:#5083e5;box-shadow:0 0 0 3px rgba(80,131,229,.12)}button{border:0;border-radius:10px;padding:12px 15px;font-weight:850;cursor:pointer}.eye{background:#eef2f6;color:#344054;white-space:nowrap}.primary{width:100%;margin-top:8px;background:#2457d6;color:#fff;font-size:15px}.primary:disabled{opacity:.45;cursor:not-allowed}.note{margin-top:15px;padding:11px 12px;border-radius:10px;background:#f0f9ff;color:#175cd3;font-size:12px;line-height:1.55}.result{display:none;margin-top:14px;padding:12px;border-radius:10px;background:#ecfdf3;color:#027a48;font-size:13px;font-weight:800}.small{margin-top:12px;color:#98a2b3;font-size:11px;line-height:1.5}code{font-family:ui-monospace,SFMono-Regular,Consolas,monospace}
+*{box-sizing:border-box}body{margin:0;background:#f4f7fb;color:#172033;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}.wrap{max-width:640px;margin:42px auto;padding:0 18px}.card{background:#fff;border:1px solid #e4e7ec;border-radius:18px;padding:24px;box-shadow:0 8px 28px rgba(16,24,40,.06)}h1{font-size:23px;margin:0 0 8px}.sub{font-size:13px;color:#667085;line-height:1.6;margin-bottom:22px}.field{margin:16px 0}label{display:block;font-size:13px;font-weight:800;margin-bottom:7px}.inputrow{display:flex;gap:7px}input{width:100%;border:1px solid #d0d5dd;border-radius:10px;padding:12px 13px;font-size:14px;outline:none}input:focus{border-color:#5083e5;box-shadow:0 0 0 3px rgba(80,131,229,.12)}button{border:0;border-radius:10px;padding:12px 15px;font-weight:850;cursor:pointer}.eye{background:#eef2f6;color:#344054;white-space:nowrap}.primary{width:100%;margin-top:8px;background:#2457d6;color:#fff;font-size:15px}.primary:disabled{opacity:.45;cursor:not-allowed}.note{margin-top:15px;padding:11px 12px;border-radius:10px;background:#f0f9ff;color:#175cd3;font-size:12px;line-height:1.55}.result{display:none;margin-top:14px;padding:12px;border-radius:10px;font-size:13px;font-weight:800;line-height:1.55}.ok{background:#ecfdf3;color:#027a48}.err{background:#fef3f2;color:#b42318}.small{margin-top:12px;color:#98a2b3;font-size:11px;line-height:1.5}
 </style>
 </head>
 <body>
 <div class="wrap"><div class="card">
 <h1>고용24 API 키 등록</h1>
-<div class="sub">직무정보 API와 강소기업 API 인증키만 입력하세요. 키는 이 페이지에서 외부로 전송하거나 저장하지 않습니다.</div>
-<div class="field"><label for="duty">직무정보 API 인증키</label><div class="inputrow"><input id="duty" type="password" autocomplete="off" spellcheck="false" placeholder="발급받은 직무정보 API 키 붙여넣기"><button class="eye" type="button" data-for="duty">보기</button></div></div>
-<div class="field"><label for="strong">강소기업 API 인증키</label><div class="inputrow"><input id="strong" type="password" autocomplete="off" spellcheck="false" placeholder="발급받은 강소기업 API 키 붙여넣기"><button class="eye" type="button" data-for="strong">보기</button></div></div>
-<button id="go" class="primary" type="button">저장 준비 → Supabase 열기</button>
-<div id="result" class="result">✓ 저장 SQL을 복사했습니다. 열린 Supabase SQL Editor에서 붙여넣고 <b>Run</b>만 누르세요.</div>
-<div class="note"><b>키가 사이트에 저장되는 것은 아닙니다.</b><br>버튼을 누르면 Vault 저장용 SQL만 클립보드에 복사되고 Supabase SQL Editor가 열립니다.</div>
-<div class="small">저장 이름: <code>WORK24_DUTY_KEY</code>, <code>WORK24_STRONG_KEY</code></div>
+<div class="sub">직무정보 API와 강소기업 API 인증키만 붙여넣고 저장하세요. Supabase 로그인은 필요 없습니다.</div>
+<div class="field"><label for="duty">직무정보 API 인증키</label><div class="inputrow"><input id="duty" type="password" autocomplete="off" spellcheck="false" placeholder="직무정보 API 키 붙여넣기"><button class="eye" type="button" data-for="duty">보기</button></div></div>
+<div class="field"><label for="strong">강소기업 API 인증키</label><div class="inputrow"><input id="strong" type="password" autocomplete="off" spellcheck="false" placeholder="강소기업 API 키 붙여넣기"><button class="eye" type="button" data-for="strong">보기</button></div></div>
+<button id="go" class="primary" type="button">API 키 저장</button>
+<div id="result" class="result"></div>
+<div class="note"><b>저장 방식</b><br>입력한 키는 HTTPS로 Supabase Edge Function에 전달되어 고용24에서 유효성 확인 후 Vault에 저장됩니다. GitHub나 브라우저 저장소에는 남기지 않습니다.</div>
+<div class="small">이 등록 링크는 1회용이며 저장이 완료되면 자동으로 무효화됩니다.</div>
 </div></div>
 <script>
 const $=id=>document.getElementById(id);
-function escSql(v){return String(v||'').replace(/'/g,"''")}
+const API='https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/work24-key-register';
+const token=new URLSearchParams(location.hash.replace(/^#/,'' )).get('setup')||'';
+const show=(msg,ok)=>{const r=$('result');r.textContent=msg;r.className='result '+(ok?'ok':'err');r.style.display='block'};
 document.querySelectorAll('.eye').forEach(b=>b.addEventListener('click',()=>{const i=$(b.dataset.for);i.type=i.type==='password'?'text':'password';b.textContent=i.type==='password'?'보기':'숨기기'}));
+if(!token){$('go').disabled=true;show('등록 링크가 없거나 만료되었습니다. 새 등록 링크를 사용해주세요.',false)}
 $('go').addEventListener('click',async()=>{
   const duty=$('duty').value.trim(),strong=$('strong').value.trim();
-  if(!duty||!strong){alert('직무정보 키와 강소기업 키를 모두 입력해주세요.');return}
-  const d=escSql(duty),s=escSql(strong);
-  const sql=`do $$\ndeclare v_id uuid;\nbegin\n  select id into v_id from vault.secrets where name='WORK24_DUTY_KEY' limit 1;\n  if v_id is null then\n    perform vault.create_secret('${d}','WORK24_DUTY_KEY','고용24 직무정보 API');\n  else\n    perform vault.update_secret(v_id,'${d}','WORK24_DUTY_KEY','고용24 직무정보 API');\n  end if;\n\n  v_id := null;\n  select id into v_id from vault.secrets where name='WORK24_STRONG_KEY' limit 1;\n  if v_id is null then\n    perform vault.create_secret('${s}','WORK24_STRONG_KEY','고용24 강소기업 API');\n  else\n    perform vault.update_secret(v_id,'${s}','WORK24_STRONG_KEY','고용24 강소기업 API');\n  end if;\nend $$;\n\nselect public.get_career_secret('WORK24_DUTY_KEY') is not null as duty_saved,\n       public.get_career_secret('WORK24_STRONG_KEY') is not null as strong_saved;`;
-  try{await navigator.clipboard.writeText(sql)}catch{const ta=document.createElement('textarea');ta.value=sql;document.body.appendChild(ta);ta.select();document.execCommand('copy');ta.remove()}
-  $('result').style.display='block';
-  $('duty').value='';$('strong').value='';
-  window.open('https://supabase.com/dashboard/project/bowxlaiyjxknqccoughl/sql/new','_blank','noopener');
+  if(!duty||!strong){show('직무정보 키와 강소기업 키를 모두 입력해주세요.',false);return}
+  const b=$('go');b.disabled=true;b.textContent='키 확인 및 저장 중...';
+  try{
+    const res=await fetch(API,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({setupToken:token,dutyKey:duty,strongKey:strong})});
+    const data=await res.json().catch(()=>({}));
+    if(!res.ok||!data.ok)throw new Error(data.error||'저장에 실패했습니다.');
+    $('duty').value='';$('strong').value='';
+    history.replaceState(null,'',location.pathname+location.search);
+    show('✓ 저장 완료. 직무정보 API와 강소기업 API 연결 준비가 끝났습니다.',true);
+    b.textContent='저장 완료';
+  }catch(e){show(e.message||String(e),false);b.disabled=false;b.textContent='API 키 저장'}
 });
 </script>
 </body>
