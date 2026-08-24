@@ -49,10 +49,14 @@ async function refresh(){
 $('form').addEventListener('submit',async e=>{
   e.preventDefault(); const btn=$('submit'); btn.disabled=true; btn.textContent='등록 중…';
   try{
-    const body={}; if(!$('dutyField').classList.contains('hidden')) body.dutyKey=$('dutyKey').value.trim(); if(!$('occupationField').classList.contains('hidden')) body.occupationKey=$('occupationKey').value.trim();
+    const body={};
+    if(!$('dutyField').classList.contains('hidden')) body.dutyKey=$('dutyKey').value.trim();
+    if(!$('occupationField').classList.contains('hidden')) body.occupationKey=$('occupationKey').value.trim();
     const r=await fetch(SETUP_URL,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
-    const text=await r.text(); if(!r.ok) throw new Error('등록 요청 실패 ('+r.status+')');
-    $('status').className='box ok'; $('status').textContent='인증키 저장 요청이 완료되었습니다. 연결 상태를 다시 확인합니다.';
+    const raw=await r.text();
+    let data={}; try{data=JSON.parse(raw)}catch{}
+    if(!r.ok || data.ok===false) throw new Error(data.error || ('등록 요청 실패 ('+r.status+')'));
+    $('status').className='box ok'; $('status').textContent='인증키 저장이 완료되었습니다. 연결 상태를 다시 확인합니다.';
     $('dutyKey').value=''; $('occupationKey').value=''; await refresh();
   }catch(e){$('status').className='box warn';$('status').textContent='등록 오류: '+(e.message||e);}
   finally{btn.disabled=false;btn.textContent='안전하게 등록하기';}
