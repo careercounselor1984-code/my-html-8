@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>고용24 직업·직무 API 등록</title>
+  <style>
+    *{box-sizing:border-box}
+    body{margin:0;background:#f6f8fb;color:#172033;font-family:system-ui,-apple-system,"Noto Sans KR",sans-serif}
+    .wrap{max-width:720px;margin:48px auto;padding:0 18px}
+    .card{background:#fff;border:1px solid #e5e7eb;border-radius:20px;padding:28px;box-shadow:0 10px 35px rgba(0,0,0,.06)}
+    h1{font-size:26px;margin:0 0 10px}
+    .sub{color:#667085;line-height:1.65;margin:0 0 24px}
+    .field{margin:18px 0}
+    label{display:block;font-weight:800;margin-bottom:8px}
+    input{width:100%;padding:14px 15px;border:1px solid #cfd4dc;border-radius:11px;font-size:16px}
+    button{width:100%;border:0;border-radius:11px;padding:15px;background:#1f63e9;color:#fff;font-size:16px;font-weight:800;cursor:pointer;margin-top:6px}
+    button:disabled{opacity:.55;cursor:wait}
+    .note{margin-top:16px;font-size:13px;line-height:1.6;color:#667085}
+    .box{margin-top:18px;padding:14px 16px;border-radius:11px;display:none;line-height:1.55}
+    .ok{display:block;background:#ecfdf3;border:1px solid #abefc6;color:#067647}
+    .err{display:block;background:#fff1f1;border:1px solid #fecaca;color:#b42318}
+    .loading{display:block;background:#eff6ff;border:1px solid #bfdbfe;color:#1d4ed8}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>고용24 직업·직무 API 등록</h1>
+      <p class="sub">인증키는 ChatGPT 대화에 입력하지 않습니다. 이 페이지에서 바로 Supabase Vault로 저장하며, 저장 전에 실제 고용24 API 연결 테스트를 진행합니다.</p>
+
+      <div class="field">
+        <label for="dutyKey">직무정보 API 인증키</label>
+        <input id="dutyKey" type="password" autocomplete="off" placeholder="고용24 직무정보 API 인증키">
+      </div>
+      <div class="field">
+        <label for="occupationKey">직업정보 API 인증키</label>
+        <input id="occupationKey" type="password" autocomplete="off" placeholder="고용24 직업정보 API 인증키">
+      </div>
+      <button id="saveBtn" type="button">연결 테스트 후 안전하게 저장</button>
+      <div id="result" class="box"></div>
+      <div class="note">주민등록번호·전화번호 등 개인정보는 입력하지 마세요. 이 페이지는 인증키 등록 전용입니다. 저장이 완료되면 같은 키를 화면에 다시 표시하지 않습니다.</div>
+    </div>
+  </div>
+
+  <script>
+    const endpoint = 'https://bowxlaiyjxknqccoughl.supabase.co/functions/v1/work24-info-setup-8p6r3v';
+    const btn = document.getElementById('saveBtn');
+    const result = document.getElementById('result');
+
+    function show(kind, text){
+      result.className = 'box ' + kind;
+      result.textContent = text;
+    }
+
+    btn.addEventListener('click', async () => {
+      const dutyKey = document.getElementById('dutyKey').value.trim();
+      const occupationKey = document.getElementById('occupationKey').value.trim();
+      if (!dutyKey || !occupationKey) {
+        show('err','직무정보와 직업정보 인증키를 모두 입력해 주세요.');
+        return;
+      }
+      btn.disabled = true;
+      show('loading','고용24 연결을 확인하고 있습니다. 잠시만 기다려 주세요.');
+      try {
+        const r = await fetch(endpoint, {
+          method:'POST',
+          headers:{'Content-Type':'application/json'},
+          body:JSON.stringify({dutyKey, occupationKey})
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok || !data.ok) throw new Error(data.error || '등록에 실패했습니다.');
+        document.getElementById('dutyKey').value = '';
+        document.getElementById('occupationKey').value = '';
+        show('ok','등록 완료: 직무정보 API와 직업정보 API가 모두 연결되고 안전하게 저장되었습니다. 이제 이 창을 닫아도 됩니다.');
+        btn.textContent = '등록 완료';
+      } catch (e) {
+        show('err', e.message || '연결 테스트에 실패했습니다.');
+        btn.disabled = false;
+      }
+    });
+  </script>
+</body>
+</html>
