@@ -1,0 +1,35 @@
+<!doctype html><html lang="ko"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow,noarchive"><meta name="referrer" content="no-referrer">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; base-uri 'none'; frame-ancestors 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'">
+<title>원문 채용공고 연결 · 좋은일자리</title>
+<style>
+:root{font-family:system-ui,"Malgun Gothic",sans-serif;background:#f2f6fa;color:#243c52}
+body{margin:0;padding:12vh 16px}
+main{margin:auto;max-width:520px;border:1px solid #dde5ee;border-radius:15px;padding:25px;background:#fff;text-align:center}
+p{font-size:14px;line-height:1.7;color:#617589}
+a{display:inline-block;color:#fff;background:#20659c;padding:12px 18px;border-radius:9px;text-decoration:none;font-weight:750}
+.error{color:#ab2336}
+</style></head><body><main>
+<h1>원문 채용공고로 이동 중</h1>
+<p id="message">공식 원문 주소를 확인하고 있습니다.</p>
+<a id="open" hidden rel="noreferrer noopener">원문 공고 직접 열기</a>
+</main>
+<script>
+(function(){"use strict";
+const allowed=["work24.go.kr","work.go.kr","job.alio.go.kr","alio.go.kr","cleaneye.go.kr","saramin.co.kr","jobkorea.co.kr","alba.co.kr","incruit.com"];
+const $=id=>document.getElementById(id);
+let u=null;
+try{
+ const raw=new URLSearchParams(location.search).get("to");
+ if(raw&&raw.length<=2500){
+  const x=new URL(raw);
+  if(x.protocol==="https:"&&!x.username&&!x.password&&(!x.port||x.port==="443")&&allowed.some(h=>x.hostname===h||x.hostname.endsWith("."+h)))u=x;
+ }
+}catch{}
+if(!u){$("message").textContent="지원되는 공식 채용사이트 주소가 아니거나 원문 링크가 없습니다. 상담사에게 문의해 주세요.";$("message").className="error";return;}
+$("open").href=u.href;$("open").hidden=false;
+$("message").textContent="원문 채용공고로 연결합니다. 자동으로 이동하지 않으면 아래 버튼을 눌러 주세요.";
+try{location.replace(u.href)}catch{$("message").textContent="자동 이동을 완료하지 못했습니다. 아래 버튼을 눌러 주세요."}
+})();
+</script></body></html>
