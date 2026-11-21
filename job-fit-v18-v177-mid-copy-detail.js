@@ -26,15 +26,15 @@
       const pay=plain(d.salary||j.salary)||'확인 필요';
       const wh=plain(d.workHours||j.work_hours)||'확인 필요';
       return [
-        plain(j.title)||'공고명 확인',
-        '업체: '+(plain(j.company)||'업체 확인'),
-        '주소: '+regionText(j,d),
-        '업무: '+workText(j,d),
-        '경력: '+career+' / 학력: '+edu,
-        '고용형태: '+emp,
-        '급여: '+pay,
-        '근무: '+wh,
-        '링크: '+sourceUrl(j)
+        '📢 '+(plain(j.title)||'공고명 확인'),
+        '🏢 '+(plain(j.company)||'업체 확인'),
+        '📍 '+regionText(j,d),
+        '🛠️ '+workText(j,d),
+        '👤 '+career+' / '+edu,
+        '📄 '+emp,
+        '💰 '+pay,
+        '🕒 '+wh,
+        '🔗 '+sourceUrl(j)
       ].join('\n');
     }
     function applyJobDetail(j,d){
